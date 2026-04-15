@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI Lead Generation Engine Backend
 
 Production-grade Node.js backend for running an AI-assisted lead generation pipeline with:
@@ -48,3 +49,6 @@ Example payload:
   }
 }
 ```
+=======
+# invo
+>>>>>>> 28c69158a0f041981d1610f60db86b7475c801b3
