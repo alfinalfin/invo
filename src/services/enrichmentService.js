@@ -1,7 +1,7 @@
 import { chunkArray } from "../utils/batch.js";
 import { logger } from "../utils/logger.js";
 import { getOutboundProfile } from "../config/outboundProfile.js";
-import { generateLeadEnrichment } from "./geminiService.js";
+import { generateLeadEnrichment } from "./aiService.js";
 
 const ENRICHMENT_BATCH_SIZE = 5;
 
@@ -61,12 +61,14 @@ export function buildFallbackEnrichment(lead) {
   };
 }
 
-export async function enrichLeads(leads) {
+export async function enrichLeads(leads, aiOptions = {}) {
   const enrichedLeads = [];
 
   for (const leadBatch of chunkArray(leads, ENRICHMENT_BATCH_SIZE)) {
     const settledEnrichment = await Promise.allSettled(
-      leadBatch.map((lead) => generateLeadEnrichment(lead, buildFallbackEnrichment(lead)))
+      leadBatch.map((lead) =>
+        generateLeadEnrichment(lead, buildFallbackEnrichment(lead), aiOptions)
+      )
     );
 
     settledEnrichment.forEach((result, index) => {
