@@ -4,7 +4,12 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   darkMode: "class",
   content: [
-    "./vue-app/**/*.{js,ts,vue}",
+    "./vue-app/components/**/*.{js,ts,vue}",
+    "./vue-app/layouts/**/*.{js,ts,vue}",
+    "./vue-app/pages/**/*.{js,ts,vue}",
+    "./vue-app/composables/**/*.{js,ts,vue}",
+    "./vue-app/lib/**/*.{js,ts,vue}",
+    "./vue-app/app.vue",
     "./server/**/*.{js,ts}",
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",

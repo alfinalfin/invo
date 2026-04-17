@@ -104,6 +104,10 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_RTDB_LEADS_PATH ||
         process.env.NEXT_PUBLIC_RTDB_LEADS_PATH ||
         "quoteRequests",
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE ||
+        process.env.NEXT_PUBLIC_API_BASE ||
+        "http://129.154.254.139",
     },
   },
   postcss: {

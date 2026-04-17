@@ -321,9 +321,8 @@ async function generateOutreach(id: string, event: Event) {
   }
   
   try {
-    const apiEndpoint = process.env.NODE_ENV === "development" 
-      ? "http://localhost:5000/api/generate-email" 
-      : "https://invo-bgjy.onrender.com/api/generate-email";
+    const config = useRuntimeConfig();
+    const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/generate-email`;
       
     const res = await fetch(apiEndpoint, {
       method: "POST",
@@ -368,9 +367,8 @@ async function enrichWithAi(id: string) {
   }
 
   try {
-    const apiEndpoint = process.env.NODE_ENV === "development" 
-      ? "http://localhost:5000/api/enrich-single-lead-ai" 
-      : "https://invo-bgjy.onrender.com/api/enrich-single-lead-ai";
+    const config = useRuntimeConfig();
+    const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/enrich-single-lead-ai`;
 
     const res = await fetch(apiEndpoint, {
       method: "POST",

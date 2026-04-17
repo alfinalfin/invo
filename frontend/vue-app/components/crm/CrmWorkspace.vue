@@ -477,9 +477,8 @@ async function handleDeleteLead(leadId: string, isAiLead: boolean = false) {
 
 async function handleWipeAllLeads(collectionName: 'ai_leads' | 'leads', ids?: string[]) {
   try {
-    const apiEndpoint = process.env.NODE_ENV === "development" 
-      ? "http://localhost:5000/api/wipe-leads" 
-      : "https://invo-bgjy.onrender.com/api/wipe-leads";
+    const config = useRuntimeConfig();
+    const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/wipe-leads`;
 
     const response = await fetch(apiEndpoint, {
       method: 'POST',

@@ -168,7 +168,7 @@ async function startScraping() {
 
   try {
     const rawLimit = Number(maxLeads.value) || 10;
-    const boundedLimit = Math.min(rawLimit, 100);
+    const boundedLimit = Math.max(10, Math.min(rawLimit, 100));
 
     const payload = {
       keywords: keywords.value,
@@ -193,9 +193,8 @@ async function startScraping() {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 600_000); // 10 minutes timeout for deep AI scraping
       
-      const apiEndpoint = process.env.NODE_ENV === "development" 
-        ? "http://localhost:5000/api/scrape-leads" 
-        : "https://invo-bgjy.onrender.com/api/scrape-leads";
+      const config = useRuntimeConfig();
+      const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/scrape-leads`;
         
       try {
         const res = await fetch(apiEndpoint, {
@@ -588,7 +587,7 @@ function viewLeads() {
           <div class="flex items-center gap-3">
             <button
               @click="closeModal"
-              class="px-5 py-2.5 text-[13px] font-bold text-outline hover:text-on-surface rounded-xl transition-all"ethese
+              class="px-5 py-2.5 text-[13px] font-bold text-outline hover:text-on-surface rounded-xl transition-all"
             >
               Cancel
             </button>
