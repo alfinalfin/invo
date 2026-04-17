@@ -1,0 +1,92 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: "class",
+  content: [
+    "./vue-app/**/*.{js,ts,vue}",
+    "./server/**/*.{js,ts}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./lib/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {
+      colors: {
+        signalOrange: "#ff5f2e",
+        cobalt: "#2E5BFF",
+        "on-error": "var(--color-on-error)",
+        "on-primary-container": "var(--color-on-primary-container)",
+        "on-background": "var(--color-on-background)",
+        "error-container": "var(--color-error-container)",
+        "surface-container-high": "var(--color-surface-container-high)",
+        "primary": "var(--color-primary)",
+        "on-tertiary": "var(--color-on-tertiary)",
+        "tertiary-container": "var(--color-tertiary-container)",
+        "secondary-container": "var(--color-secondary-container)",
+        "surface-container-highest": "var(--color-surface-container-highest)",
+        "surface-container-lowest": "var(--color-surface-container-lowest)",
+        "on-error-container": "var(--color-on-error-container)",
+        "on-secondary-container": "var(--color-on-secondary-container)",
+        "on-secondary": "var(--color-on-secondary)",
+        "inverse-surface": "var(--color-inverse-surface)",
+        "tertiary": "var(--color-tertiary)",
+        "primary-fixed": "var(--color-primary-fixed)",
+        "tertiary-fixed": "var(--color-tertiary-fixed)",
+        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+        "background": "var(--color-background)",
+        "surface-container": "var(--color-surface-container)",
+        "secondary-fixed": "var(--color-secondary-fixed)",
+        "on-surface": "var(--color-on-surface)",
+        "surface-tint": "var(--color-surface-tint)",
+        "on-primary-fixed": "var(--color-on-primary-fixed)",
+        "outline": "var(--color-outline)",
+        "surface-dim": "var(--color-surface-dim)",
+        "on-tertiary-container": "var(--color-on-tertiary-container)",
+        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+        "primary-container": "var(--color-primary-container)",
+        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+        "inverse-primary": "var(--color-inverse-primary)",
+        "surface-bright": "var(--color-surface-bright)",
+        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+        "outline-variant": "var(--color-outline-variant)",
+        "error": "var(--color-error)",
+        "surface": "var(--color-surface)",
+        "on-primary": "var(--color-on-primary)",
+        "surface-container-low": "var(--color-surface-container-low)",
+        "inverse-on-surface": "var(--color-inverse-on-surface)",
+        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+        "secondary": "var(--color-secondary)",
+        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+        "on-surface-variant": "var(--color-on-surface-variant)",
+        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+        "surface-variant": "var(--color-surface-variant)"
+      },
+      fontFamily: {
+        display: ["var(--font-display)", ...defaultTheme.fontFamily.sans],
+        sans: ["var(--font-body)", ...defaultTheme.fontFamily.sans],
+      },
+      boxShadow: {
+        aura: "0 30px 90px rgba(46,91,255,0.16)",
+        ember: "0 30px 90px rgba(255,95,46,0.14)",
+      },
+      keyframes: {
+        "pulse-glow": {
+          "0%, 100%": {
+            opacity: "0.55",
+            transform: "scale(1)",
+          },
+          "50%": {
+            opacity: "0.85",
+            transform: "scale(1.08)",
+          },
+        },
+      },
+      animation: {
+        "pulse-glow": "pulse-glow 4s ease-in-out infinite",
+      },
+    },
+  },
+  plugins: [],
+};

@@ -1,0 +1,196 @@
+{
+  "name": "AI-Powered Lead Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "scrape-leads",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [ 200, 300 ],
+      "webhookId": "scrape-leads-id"
+    },
+    {
+      "parameters": {
+        "url": "=https://maps.googleapis.com/maps/api/place/textsearch/json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "={{$json.body.keywords.join(' ')}}_{{$json.body.location}}" },
+            { "name": "key", "value": "AIzaSyBzXbQ4F2tJNFwQQeOY4mc2zcLzv_6A_1g" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "maps-scraper",
+      "name": "Google Maps Scraper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 400, 300 ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "id": "split-results",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.1,
+      "position": [ 600, 300 ]
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "id": "batch",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [ 800, 300 ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.openclaw.com/v1/enrich",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "name", "value": "={{$json.name}}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "openclaw-enrich",
+      "name": "OpenClaw Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 1000, 200 ],
+      "notes": "Placeholder for actual OpenClaw API if enabled"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyDBWVs1qo4VjZB4XIdYeX9NZxFJld5uDcE",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "=[{\"parts\":[{\"text\":\"Evaluate this logistics business lead. Draft a personalized short cold outreach email. Extract their business relevance and output standard JSON with keys: company, location, phone, email, website, source, ai_summary, draft_email. Raw Data: Name: {{$node['Item Lists'].json.name}}, Address: {{$node['Item Lists'].json.formatted_address}}. Reply ONLY in pure JSON.\"}]}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gemini-ai",
+      "name": "Gemini AI Process",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 1000, 400 ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "company", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).company}}" },
+            { "name": "location", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).location}}" },
+            { "name": "phone", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).phone}}" },
+            { "name": "email", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).email}}" },
+            { "name": "website", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).website}}" },
+            { "name": "source", "value": "Google Maps / API" },
+            { "name": "ai_summary", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).ai_summary}}" },
+            { "name": "draft_email", "value": "={{JSON.parse($json.candidates[0].content.parts[0].text).draft_email}}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-json",
+      "name": "Format JSON",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [ 1200, 400 ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            { "fieldToAggregate": "company", "renameField": "company" },
+            { "fieldToAggregate": "location", "renameField": "location" },
+            { "fieldToAggregate": "phone", "renameField": "phone" },
+            { "fieldToAggregate": "email", "renameField": "email" },
+            { "fieldToAggregate": "website", "renameField": "website" },
+            { "fieldToAggregate": "source", "renameField": "source" },
+            { "fieldToAggregate": "ai_summary", "renameField": "ai_summary" },
+            { "fieldToAggregate": "draft_email", "renameField": "draft_email" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "merge-leads",
+      "name": "Merge Array",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.1,
+      "position": [ 1400, 300 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"leads\": {{$json}}\n}",
+        "options": {}
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [ 1600, 300 ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [ { "node": "Google Maps Scraper", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Google Maps Scraper": {
+      "main": [
+        [ { "node": "Item Lists", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [ { "node": "Split In Batches", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [ { "node": "Gemini AI Process", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Gemini AI Process": {
+      "main": [
+        [ { "node": "Format JSON", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Format JSON": {
+      "main": [
+        [ { "node": "Merge Array", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Merge Array": {
+      "main": [
+        [ { "node": "Respond to Webhook", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

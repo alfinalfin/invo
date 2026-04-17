@@ -1,0 +1,1244 @@
+﻿app/analytics/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/analytics/page.tsx(3,30): error TS2307: Cannot find module '@/components/crm/crm-workspace' or its corresponding type declarations.
+app/careers/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/careers/page.tsx(3,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/careers/page.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/careers/page.tsx(19,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/careers/page.tsx(20,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/careers/page.tsx(28,15): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/faq/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/faq/page.tsx(3,30): error TS2307: Cannot find module '@/components/faq-accordion' or its corresponding type declarations.
+app/faq/page.tsx(4,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/faq/page.tsx(20,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/franchise/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/franchise/page.tsx(3,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/franchise/page.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/franchise/page.tsx(19,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/franchise/page.tsx(20,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/franchise/page.tsx(29,15): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/layout.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/layout.tsx(2,31): error TS2307: Cannot find module 'next/font/google' or its corresponding type declarations.
+app/layout.tsx(3,32): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+app/layout.tsx(21,36): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+app/layout.tsx(34,21): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+app/layout.tsx(63,21): error TS2322: Type '{ lang: string; suppressHydrationWarning: true; "data-theme": string; }' is not assignable to type 'HtmlHTMLAttributes & ReservedProps'.
+  Property 'suppressHydrationWarning' does not exist on type 'HtmlHTMLAttributes & ReservedProps'.
+app/layout.tsx(65,9): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/layout.tsx(67,17): error TS2322: Type '{ dangerouslySetInnerHTML: { __html: string; }; }' is not assignable to type 'ScriptHTMLAttributes & ReservedProps'.
+  Property 'dangerouslySetInnerHTML' does not exist on type 'ScriptHTMLAttributes & ReservedProps'.
+app/leads/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/leads/page.tsx(3,30): error TS2307: Cannot find module '@/components/crm/crm-workspace' or its corresponding type declarations.
+app/make-payment/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/make-payment/page.tsx(3,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/make-payment/page.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/make-payment/page.tsx(19,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/make-payment/page.tsx(20,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/page.tsx(3,30): error TS2307: Cannot find module '@/components/crm/crm-workspace' or its corresponding type declarations.
+app/privacy/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/privacy/page.tsx(3,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/privacy/page.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+app/robots.ts(1,36): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/robots.ts(13,28): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+app/robots.ts(14,22): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+app/settings/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/settings/page.tsx(3,30): error TS2307: Cannot find module '@/components/crm/crm-workspace' or its corresponding type declarations.
+app/sitemap.ts(1,36): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/sitemap.ts(11,24): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+app/terms/page.tsx(1,31): error TS2307: Cannot find module 'next' or its corresponding type declarations.
+app/terms/page.tsx(3,33): error TS2307: Cannot find module '@/components/simple-page-shell' or its corresponding type declarations.
+app/terms/page.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(17,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+components/crm/analytics-panels.tsx(55,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(57,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(59,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(61,31): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(63,15): error TS2322: Type '{ className: string; style: { backgroundColor: string; }; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(84,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(85,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(86,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(88,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(89,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(93,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(98,45): error TS2322: Type '{ style: { height: number; }; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(143,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(144,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(145,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(147,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(148,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(153,40): error TS2322: Type '{ style: { height: number; }; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(185,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(187,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(188,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-panels.tsx(192,46): error TS2322: Type '{ style: { height: number; }; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(30,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(31,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(32,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(33,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(34,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(37,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(41,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(42,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(43,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(50,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(54,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(55,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(56,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(59,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(72,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(73,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(74,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(75,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(79,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(80,18): error TS2322: Type '{ className: string; }' is not assignable to type 'TableHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TableHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(81,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(82,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(83,21): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(84,21): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(85,21): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(86,21): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(87,21): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(92,39): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(93,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(96,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(97,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(98,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/analytics-section.tsx(101,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(10,53): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/crm/auth-gate.tsx(12,64): error TS2307: Cannot find module '@/lib/firebase' or its corresponding type declarations.
+components/crm/auth-gate.tsx(82,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(83,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(84,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(87,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(90,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(92,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(95,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(105,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(106,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(107,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(110,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(113,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(124,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(125,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(126,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(129,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(132,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(143,13): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(153,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(154,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(155,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(156,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(157,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(158,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(161,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(165,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(172,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(173,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(174,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(177,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(183,13): error TS2322: Type '{ className: string; onSubmit: (event: SubmitEvent) => void; }' is not assignable to type 'FormHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'FormHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(201,17): error TS2322: Type '{ htmlFor: string; className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'htmlFor' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(210,47): error TS18047: 'event.target' is possibly 'null'.
+components/crm/auth-gate.tsx(210,60): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/auth-gate.tsx(211,17): error TS2322: Type '{ id: string; type: "email"; value: any; onChange: (event: Event) => any; className: string; placeholder: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(218,17): error TS2322: Type '{ htmlFor: string; className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'htmlFor' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(227,50): error TS18047: 'event.target' is possibly 'null'.
+components/crm/auth-gate.tsx(227,63): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/auth-gate.tsx(228,17): error TS2322: Type '{ id: string; type: "password"; value: any; onChange: (event: Event) => any; className: string; placeholder: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(234,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/auth-gate.tsx(241,15): error TS2322: Type '{ type: "submit"; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(10,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/crm/crm-workspace.tsx(11,55): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/crm/crm-workspace.tsx(55,8): error TS2307: Cannot find module '@/lib/firebase' or its corresponding type declarations.
+components/crm/crm-workspace.tsx(104,6): error TS2322: Type '{}' is not assignable to type 'IntrinsicAttributes & AuthGateProps'.
+  Property 'children' is missing in type '{}' but required in type 'AuthGateProps'.
+components/crm/crm-workspace.tsx(105,9): error TS7006: Parameter 'session' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(155,37): error TS7006: Parameter 'count' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(191,37): error TS7006: Parameter 'count' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(251,17): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(261,19): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(264,36): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(270,39): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(271,40): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(275,34): error TS7006: Parameter 'total' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(275,41): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(286,15): error TS7006: Parameter 'current' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(287,20): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/crm/crm-workspace.tsx(463,11): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(464,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(472,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(473,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(493,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(515,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(518,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/crm-workspace.tsx(521,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(43,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(44,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(45,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(46,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(47,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(48,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(51,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(57,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(58,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(61,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(64,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(73,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(97,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(100,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(101,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(102,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(104,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(105,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(111,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(117,19): error TS2322: Type '{ key: string; type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(120,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(123,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(131,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(133,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(134,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(138,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(142,19): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(144,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(145,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(148,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(152,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/dashboard-section.tsx(154,23): error TS2322: Type '{ className: string; style: { width: string; }; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(13,52): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/crm/lead-detail-sheet.tsx(92,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(94,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(95,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(98,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(105,17): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(111,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(112,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(113,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(114,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(118,39): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(124,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(125,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(126,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(129,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(133,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(134,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(137,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(144,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(147,21): error TS2322: Type '{ href: string; className: string; }' is not assignable to type 'AnchorHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'AnchorHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(151,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(154,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(159,21): error TS2322: Type '{ href: string; className: string; }' is not assignable to type 'AnchorHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'AnchorHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(163,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(166,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(171,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(172,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(175,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(178,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(183,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(185,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(188,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(193,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(196,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(202,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(205,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(213,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(214,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(217,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(220,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(225,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(226,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(227,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(230,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(234,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(235,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(238,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(245,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(246,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(249,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(252,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(257,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(258,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(259,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(262,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(268,25): error TS2322: Type '{ htmlFor: string; className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'htmlFor' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(277,42): error TS18047: 'event.target' is possibly 'null'.
+components/crm/lead-detail-sheet.tsx(277,55): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/lead-detail-sheet.tsx(279,25): error TS2322: Type '{ id: string; value: any; onChange: (event: Event) => any; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(290,25): error TS2322: Type '{ htmlFor: string; className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'htmlFor' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(299,60): error TS18047: 'event.target' is possibly 'null'.
+components/crm/lead-detail-sheet.tsx(299,73): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/lead-detail-sheet.tsx(300,25): error TS2322: Type '{ id: string; rows: number; value: any; onChange: (event: Event) => any; className: string; }' is not assignable to type 'TextareaHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TextareaHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(306,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(313,21): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(324,21): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/lead-detail-sheet.tsx(332,21): error TS2322: Type '{ type: "button"; onClick: () => void; disabled: any; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(2,52): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/crm/leads-section.tsx(57,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(58,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(59,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(61,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(62,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(63,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(68,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(69,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(72,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(75,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(82,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(83,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(84,18): error TS2322: Type '{ className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(85,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(91,33): error TS18047: 'event.target' is possibly 'null'.
+components/crm/leads-section.tsx(91,46): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/leads-section.tsx(93,15): error TS2322: Type '{ value: "Converted" | "New" | "Contacted" | "Pending" | "Closed" | "All"; onChange: (event: Event) => any; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(103,18): error TS2322: Type '{ className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(104,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(110,33): error TS18047: 'event.target' is possibly 'null'.
+components/crm/leads-section.tsx(110,46): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/leads-section.tsx(112,15): error TS2322: Type '{ value: "Website" | "WhatsApp" | "Referral" | "Google Ads" | "Field Sales" | "All"; onChange: (event: Event) => any; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(122,18): error TS2322: Type '{ className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(123,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(129,30): error TS18047: 'event.target' is possibly 'null'.
+components/crm/leads-section.tsx(129,43): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/leads-section.tsx(131,15): error TS2322: Type '{ value: "7d" | "30d" | "90d"; onChange: (event: Event) => any; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(140,18): error TS2322: Type '{ className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(141,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(147,31): error TS18047: 'event.target' is possibly 'null'.
+components/crm/leads-section.tsx(147,44): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/leads-section.tsx(149,15): error TS2322: Type '{ value: "status" | "value" | "newest" | "oldest"; onChange: (event: Event) => any; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(158,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(159,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(162,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-section.tsx(165,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(44,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(45,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(48,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(51,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(59,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(61,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(63,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(66,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(74,15): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(83,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(84,16): error TS2322: Type '{ className: string; }' is not assignable to type 'TableHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TableHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(85,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(86,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(87,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(88,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(89,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(90,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(91,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(92,19): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(93,31): error TS2322: Type '{ className: string; }' is not assignable to type 'ThHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ThHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(100,17): error TS2322: Type '{ key: string; className: string; onClick: () => void; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(103,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(105,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(108,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(111,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(112,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(113,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(114,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(117,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(121,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(122,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(127,21): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(128,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(131,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(136,23): error TS2322: Type '{ className: string; }' is not assignable to type 'TdHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'TdHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(138,23): error TS2322: Type '{ className: string; onClick: (event: PointerEvent) => void; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(143,25): error TS2322: Type '{ href: string; className: string; "aria-label": string; }' is not assignable to type 'AnchorHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'AnchorHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(152,25): error TS2322: Type '{ href: string; target: string; rel: string; className: string; "aria-label": string; }' is not assignable to type 'AnchorHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'AnchorHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(159,25): error TS2322: Type '{ href: string; className: string; "aria-label": string; }' is not assignable to type 'AnchorHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'AnchorHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(173,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(179,13): error TS2322: Type '{ key: string; type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(181,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(183,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(186,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(190,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(191,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(194,33): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(204,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(205,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(208,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(213,15): error TS2322: Type '{ type: "button"; onClick: () => void; disabled: boolean; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/leads-table.tsx(222,15): error TS2322: Type '{ type: "button"; onClick: () => void; disabled: boolean; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(3,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(4,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(6,28): error TS2322: Type '{ key: number; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(7,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(8,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(9,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(14,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(15,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(16,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(17,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(22,17): error TS2322: Type '{ key: number; className: string; style: { height: string; }; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(29,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(30,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(31,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(32,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(34,32): error TS2322: Type '{ key: number; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(35,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(36,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(43,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(44,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(45,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(49,15): error TS2322: Type '{ key: number; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/loading-state.tsx(52,38): error TS2322: Type '{ key: number; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(17,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(18,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(19,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(20,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(21,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(24,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(29,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(30,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(31,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(33,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(37,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(42,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(43,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(45,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(49,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(57,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(58,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(59,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(60,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(61,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(64,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(68,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(69,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(72,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(76,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(77,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(80,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(84,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(85,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(88,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(96,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(97,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(98,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(101,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(104,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(109,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(123,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(124,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(127,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(130,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/settings-section.tsx(136,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(1,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/crm/sidebar.tsx(56,7): error TS2322: Type '{ className: string; style: { background: string; }; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(60,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(61,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(65,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(68,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(72,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(73,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(76,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(91,25): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(93,27): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(104,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(105,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(106,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(108,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(109,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(116,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(117,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(118,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(121,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(125,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(126,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(129,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/sidebar.tsx(136,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/status-badge.tsx(22,7): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/status-badge.tsx(27,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/status-badge.tsx(36,7): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(25,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(26,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(27,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(29,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(30,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(33,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(35,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/summary-card.tsx(40,9): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(25,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(26,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(30,47): error TS18047: 'event.target' is possibly 'null'.
+components/crm/topbar.tsx(30,60): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/crm/topbar.tsx(32,11): error TS2322: Type '{ value: string; onChange: (event: Event) => void; placeholder: string; className: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(36,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(37,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(45,11): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; "aria-label": string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(58,11): error TS2322: Type '{ type: "button"; onClick: () => void; className: string; "aria-label": string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(63,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(69,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(70,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(77,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(78,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/crm/topbar.tsx(81,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(5,26): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/faq-accordion.tsx(17,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(24,13): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(28,15): error TS2322: Type '{ type: "button"; className: string; onClick: () => any; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(31,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(34,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/faq-accordion.tsx(47,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(6,36): error TS2307: Cannot find module '@/components/multi-step-quote-form' or its corresponding type declarations.
+components/hero-section.tsx(28,25): error TS2322: Type '{ id: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(29,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(30,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(32,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(39,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(44,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(48,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(55,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(56,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(59,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(62,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(67,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(83,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(86,23): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/hero-section.tsx(89,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(3,15): error TS2305: Module '"@/data/site-content"' has no exported member 'Industry'.
+components/industry-marquee.tsx(13,10): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(14,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(18,13): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(20,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(21,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(25,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(28,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(34,15): error TS2322: Type '{ className: string; role: string; "aria-label": string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(38,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/industry-marquee.tsx(39,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(13,25): error TS2322: Type '{ id: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(14,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(15,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(16,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(17,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(19,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(20,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/manifesto-section.tsx(25,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(11,32): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/multi-step-quote-form.tsx(12,26): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/multi-step-quote-form.tsx(14,10): error TS2305: Module '"@/data/site-content"' has no exported member 'industryOptions'.
+components/multi-step-quote-form.tsx(14,27): error TS2305: Module '"@/data/site-content"' has no exported member 'placeSuggestions'.
+components/multi-step-quote-form.tsx(14,45): error TS2305: Module '"@/data/site-content"' has no exported member 'vehicles'.
+components/multi-step-quote-form.tsx(70,18): error TS7006: Parameter 'place' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(87,14): error TS7006: Parameter 'current' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(109,35): error TS2322: Type '{ onSubmit: (event: FormEvent<HTMLFormElement>) => void; className: string; noValidate: true; }' is not assignable to type 'FormHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'FormHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(110,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(111,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(113,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(116,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(120,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(125,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(133,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(134,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(135,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(137,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(140,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(149,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(154,34): error TS2322: Type '{ key: FieldName; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(155,26): error TS2322: Type '{ className: string; }' is not assignable to type 'LabelHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'LabelHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(160,61): error TS18047: 'event.target' is possibly 'null'.
+components/multi-step-quote-form.tsx(160,74): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/multi-step-quote-form.tsx(167,21): error TS2322: Type '{ value: any; onChange: (event: Event) => void; onFocus: () => any; onBlur: () => void; placeholder: string; className: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(179,49): error TS7006: Parameter 'suggestion' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(183,29): error TS2322: Type '{ key: string; type: "button"; className: string; onMouseDown: (event: any) => void; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(184,43): error TS7006: Parameter 'event' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(190,35): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(203,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(219,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(221,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(224,23): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(235,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(236,32): error TS7006: Parameter 'vehicle' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(241,21): error TS2322: Type '{ key: any; type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(247,26): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(249,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(252,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(256,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(260,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(280,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(282,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(285,23): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(296,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(305,21): error TS2322: Type '{ key: string; type: "button"; onClick: () => void; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(331,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(333,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(336,23): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(343,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(346,60): error TS18047: 'event.target' is possibly 'null'.
+components/multi-step-quote-form.tsx(346,73): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/multi-step-quote-form.tsx(348,19): error TS2322: Type '{ value: any; onChange: (event: Event) => void; placeholder: string; className: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(352,63): error TS18047: 'event.target' is possibly 'null'.
+components/multi-step-quote-form.tsx(352,76): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/multi-step-quote-form.tsx(354,19): error TS2322: Type '{ value: any; onChange: (event: Event) => void; placeholder: string; className: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(358,64): error TS18047: 'event.target' is possibly 'null'.
+components/multi-step-quote-form.tsx(358,77): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/multi-step-quote-form.tsx(359,19): error TS2322: Type '{ value: any; onChange: (event: Event) => void; className: string; }' is not assignable to type 'SelectHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'SelectHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(361,36): error TS2322: Type '{ value: string; className: string; }' is not assignable to type 'OptionHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'OptionHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(364,41): error TS7006: Parameter 'industry' implicitly has an 'any' type.
+components/multi-step-quote-form.tsx(365,61): error TS2322: Type '{ key: any; value: any; className: string; }' is not assignable to type 'OptionHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'OptionHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(372,61): error TS18047: 'event.target' is possibly 'null'.
+components/multi-step-quote-form.tsx(372,74): error TS2339: Property 'value' does not exist on type 'EventTarget'.
+components/multi-step-quote-form.tsx(374,19): error TS2322: Type '{ value: any; onChange: (event: Event) => void; placeholder: string; className: string; }' is not assignable to type 'InputHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'InputHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(381,17): error TS2322: Type '{ type: "submit"; disabled: boolean; className: string; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(405,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(408,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/multi-step-quote-form.tsx(409,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(1,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/service-card.tsx(17,15): error TS2305: Module '"@/data/site-content"' has no exported member 'Service'.
+components/service-card.tsx(43,7): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(47,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(48,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(49,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(51,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(54,17): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(58,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(63,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(68,11): error TS2322: Type '{ className: string; role: string; "aria-label": string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(73,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/service-card.tsx(74,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(1,32): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/simple-page-shell.tsx(2,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/simple-page-shell.tsx(19,24): error TS2322: Type '{ id: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(20,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(21,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(22,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(23,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(24,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(25,15): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(28,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/simple-page-shell.tsx(41,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(1,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/site-footer.tsx(4,10): error TS2305: Module '"@/data/site-content"' has no exported member 'statusItems'.
+components/site-footer.tsx(26,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(27,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(28,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(29,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(30,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(31,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(32,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(36,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(42,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(60,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(61,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(62,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(63,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(76,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(77,19): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(78,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(87,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(88,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(89,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(91,48): error TS2322: Type '{ key: string; className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-footer.tsx(99,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(3,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+components/site-header.tsx(13,26): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/alfin/Documents/invocrm/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+components/site-header.tsx(15,10): error TS2305: Module '"@/data/site-content"' has no exported member 'services'.
+components/site-header.tsx(28,13): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(29,12): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(30,14): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(32,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(36,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(39,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(45,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(46,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(53,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(54,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(55,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(56,48): error TS7006: Parameter 'service' implicitly has an 'any' type.
+components/site-header.tsx(62,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(65,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(68,28): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(74,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(75,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(78,25): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(81,24): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(107,16): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(115,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(117,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(118,21): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(133,13): error TS2322: Type '{ type: "button"; "aria-label": string; className: string; onClick: () => any; }' is not assignable to type 'ButtonHTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'ButtonHTMLAttributes & ReservedProps'.
+components/site-header.tsx(134,43): error TS7006: Parameter 'value' implicitly has an 'any' type.
+components/site-header.tsx(150,18): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(151,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(152,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(155,22): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(156,46): error TS7006: Parameter 'service' implicitly has an 'any' type.
+components/site-header.tsx(169,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+components/site-header.tsx(182,20): error TS2322: Type '{ className: string; }' is not assignable to type 'HTMLAttributes & ReservedProps'.
+  Property 'className' does not exist on type 'HTMLAttributes & ReservedProps'.
+lib/schema.ts(1,20): error TS2305: Module '"@/data/site-content"' has no exported member 'services'.
+lib/schema.ts(5,40): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+lib/schema.ts(14,25): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+lib/schema.ts(30,30): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.
+lib/schema.ts(40,42): error TS7006: Parameter 'service' implicitly has an 'any' type.
+lib/schema.ts(55,30): error TS2339: Property 'url' does not exist on type '{ name: string; description: string; phoneDisplay: string; phoneHref: string; locale: string; }'.

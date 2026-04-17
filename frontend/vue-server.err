@@ -1,0 +1,48 @@
+[Vue Router warn]: No match found for location with path "/sitemap.xml"
+[Vue Router warn]: No match found for location with path "/sitemap.xml"
+[Vue Router warn]: No match found for location with path "/sitemap.xml"
+[Vue Router warn]: No match found for location with path "/sitemap.xml"
+[request error] [unhandled] [GET] http://127.0.0.1:3002/leads
+ TypeError: Cannot destructure property 'session' of 'undefined' as it is undefined.
+    at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:694:29
+    ... 8 lines matching cause stack trace ...
+    at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:104:10) {
+  cause: TypeError: Cannot destructure property 'session' of 'undefined' as it is undefined.
+      at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:694:29
+      at renderFnWithContext (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:312:13)
+      at normalizeChildren (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6270:34)
+      at createBaseVNode (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6096:5)
+      at Object._createVNode [as createVNode] (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6158:10)
+      at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:105:9)
+      at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:693:13
+      at renderComponentSubTree (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:470:9)
+      at renderComponentVNode (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:420:12)
+      at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:104:10),
+  statusCode: 500,
+  fatal: false,
+  unhandled: true,
+  statusMessage: undefined,
+  data: undefined
+}
+[request error] [unhandled] [GET] http://127.0.0.1:3002/
+ TypeError: Cannot destructure property 'session' of 'undefined' as it is undefined.
+    at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:694:29
+    ... 8 lines matching cause stack trace ...
+    at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:104:10) {
+  cause: TypeError: Cannot destructure property 'session' of 'undefined' as it is undefined.
+      at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:694:29
+      at renderFnWithContext (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:312:13)
+      at normalizeChildren (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6270:34)
+      at createBaseVNode (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6096:5)
+      at Object._createVNode [as createVNode] (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\runtime-core\dist\runtime-core.cjs.prod.js:6158:10)
+      at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:105:9)
+      at file:///C:/Users/alfin/Documents/New%20project/.output/server/chunks/build/CrmWorkspace-CWZhCDna.mjs:693:13
+      at renderComponentSubTree (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:470:9)
+      at renderComponentVNode (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:420:12)
+      at ssrRenderComponent (C:\Users\alfin\Documents\New project\.output\server\node_modules\@vue\server-renderer\dist\server-renderer.cjs.prod.js:104:10),
+  statusCode: 500,
+  fatal: false,
+  unhandled: true,
+  statusMessage: undefined,
+  data: undefined
+}

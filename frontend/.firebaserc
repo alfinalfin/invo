@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "invo-e72fe"
+  },
+  "targets": {
+    "invo-e72fe": {
+      "hosting": {
+        "invoaura-crm": [
+          "invoaura-crm"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

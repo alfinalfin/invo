@@ -1,0 +1,37 @@
+{
+  "name": "invo-aura-logistics",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "deploy:hosting": "nuxt generate && firebase deploy --only hosting",
+    "start": "nuxt start",
+    "prepare": "nuxt prepare"
+  },
+  "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
+    "chart.js": "^4.4.7",
+    "cheerio": "^1.2.0",
+    "firebase": "^12.11.0",
+    "framer-motion": "^12.38.0",
+    "lucide-vue-next": "^0.460.0",
+    "nuxt": "^3.17.7",
+    "puppeteer": "^24.40.0",
+    "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "next": "^16.2.2",
+    "postcss": "^8.4.49",
+    "recharts": "^3.8.1",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}

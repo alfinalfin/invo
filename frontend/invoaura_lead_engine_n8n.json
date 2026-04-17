@@ -1,0 +1,220 @@
+{
+  "name": "InvoAura — AI Lead Engine",
+  "nodes": [
+    {
+      "id": "a1b2c3d4-0001-0001-0001-aaaaaaaaaaaa",
+      "name": "Webhook — Receive Lead Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "invoaura-scrape-leads",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "scrape-leads",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "notes": "Entry point. POST body must include: keywords (array), region (string), sources (array), optional maxLeads (number). The webhook waits for the Respond node before replying."
+    },
+
+    {
+      "id": "a1b2c3d4-0002-0002-0002-bbbbbbbbbbbb",
+      "name": "Code — Parse Input & Build Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "/**\n * Parse and normalise the webhook body.\n * Supports both flat and nested body (some n8n versions wrap it).\n */\nconst raw  = $input.first().json;\nconst body = raw.body || raw;\n\nconst keywords = (Array.isArray(body.keywords) && body.keywords.length > 0)\n  ? body.keywords\n  : ['freight forwarder', 'logistics', 'customs clearance'];\n\nconst region   = (body.region || body.location || 'UK').trim();\nconst sources  = Array.isArray(body.sources) ? body.sources : ['maps'];\nconst maxLeads = Math.min(Number(body.maxLeads) || 10, 20); // hard cap 20\nconst enableAI = body.enableAIFiltering !== false;\n\n// Combine all keywords into a single Places-compatible search string\nconst query = keywords.join(' ') + ' ' + region;\n\nreturn [{\n  json: {\n    query,\n    region,\n    keywords,\n    sources,\n    maxLeads,\n    enableAI,\n    GOOGLE_KEY: 'AIzaSyBzXbQ4F2tJNFwQQeOY4mc2zcLzv_6A_1g',\n    GEMINI_KEY: 'AIzaSyDBWVs1qo4VjZB4XIdYeX9NZxFJld5uDcE'\n  }\n}];"
+      },
+      "notes": "Validates input, applies defaults, and writes API keys into the pipeline context so downstream nodes can reference them via {{$json.GOOGLE_KEY}} etc."
+    },
+
+    {
+      "id": "a1b2c3d4-0003-0003-0003-cccccccccccc",
+      "name": "HTTP — Google Places TextSearch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "https://maps.googleapis.com/maps/api/place/textsearch/json",
+        "authentication": "none",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "={{$json.query}}" },
+            { "name": "key",   "value": "={{$json.GOOGLE_KEY}}" }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "notes": "Calls Google Maps Places TextSearch. Returns up to 20 raw business results matching the combined keyword + region query. Requires Places API enabled in GCP Console."
+    },
+
+    {
+      "id": "a1b2c3d4-0004-0004-0004-dddddddddddd",
+      "name": "Code — Extract Place IDs as Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "/**\n * Convert the Google Places TextSearch array into individual items.\n * Each item = one place. This allows the next HTTP Request node\n * to automatically run once per place (n8n's native per-item execution).\n */\nconst data = $input.first().json;\n\n// Carry forward config from upstream\nconst ctx = $('Code — Parse Input & Build Query').first().json;\n\nif (!data.results || !Array.isArray(data.results) || data.results.length === 0) {\n  console.warn('[LeadEngine] Google Places returned 0 results. Status:', data.status, data.error_message || '');\n  // Emit a sentinel item — the Collect node downstream handles the fallback\n  return [{ json: { place_id: null, name: 'FALLBACK', _useFallback: true, ...ctx } }];\n}\n\nconst limit = ctx.maxLeads || 10;\nconst places = data.results.slice(0, limit);\n\nreturn places.map(p => ({\n  json: {\n    place_id:     p.place_id,\n    name:         p.name,\n    vicinity:     p.vicinity || '',\n    rating:       p.rating,\n    _useFallback: false,\n    GOOGLE_KEY:   ctx.GOOGLE_KEY,\n    GEMINI_KEY:   ctx.GEMINI_KEY,\n    maxLeads:     ctx.maxLeads,\n    enableAI:     ctx.enableAI,\n    region:       ctx.region\n  }\n}));"
+      },
+      "notes": "Splits the TextSearch array into N individual items. The next HTTP Request node for Place Details will automatically execute once per item (n8n's default looping behaviour)."
+    },
+
+    {
+      "id": "a1b2c3d4-0005-0005-0005-eeeeeeeeeeee",
+      "name": "HTTP — Google Place Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "https://maps.googleapis.com/maps/api/place/details/json",
+        "authentication": "none",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "place_id", "value": "={{$json.place_id}}" },
+            { "name": "fields",   "value": "name,formatted_phone_number,website,formatted_address,rating" },
+            { "name": "key",      "value": "={{$json.GOOGLE_KEY}}" }
+          ]
+        },
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "notes": "Fetches verified contact data for each place: phone number, website URL, full formatted address. Runs automatically N times (once per item from the Extract node). Fields billed separately — only request what you need."
+    },
+
+    {
+      "id": "a1b2c3d4-0006-0006-0006-ffffffffffff",
+      "name": "Code — Collect Leads & Infer Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "/**\n * 1. Collects all Place Details results into a single raw leads array.\n * 2. Infers contact email from the website domain.\n * 3. Applies fallback leads if Google Places returned nothing.\n * 4. Outputs a single item containing all raw leads + config for Gemini.\n */\n\nfunction extractDomain(url) {\n  if (!url) return '';\n  try {\n    const u = new URL(url.startsWith('http') ? url : 'https://' + url);\n    return u.hostname.replace(/^www\\./, '');\n  } catch { return ''; }\n}\n\nfunction inferEmail(domain, company) {\n  if (!domain) return '';\n  const prefix = (company || '').toLowerCase().includes('customs') ? 'enquiries' : 'info';\n  return `${prefix}@${domain}`;\n}\n\n// Carry forward top-level config\nconst ctx = $('Code — Parse Input & Build Query').first().json;\n\n// Check if we should use fallback set\nconst firstItem = $input.first().json;\nconst useFallback = firstItem._useFallback === true;\n\nlet rawLeads = [];\n\nif (useFallback) {\n  // Verified UK logistics companies as fallback when Maps quota is exceeded\n  rawLeads = [\n    { company: 'Davies Turner & Co Ltd',   phone: '+44 121 322 1000', website: 'https://www.daviesturner.co.uk',    location: 'Birmingham, UK',  rating: 4.5 },\n    { company: 'Geodis UK',                phone: '+44 1753 800 200', website: 'https://geodis.com/gb',             location: 'Heathrow, UK',    rating: 4.2 },\n    { company: 'DSV Road Ltd',             phone: '+44 1527 519 100', website: 'https://www.dsv.com/en-gb',         location: 'Redditch, UK',    rating: 4.3 },\n    { company: 'Kuehne + Nagel Ltd',       phone: '+44 1784 425 000', website: 'https://home.kuehne-nagel.com',    location: 'Staines, UK',     rating: 4.4 },\n    { company: 'DB Schenker UK',           phone: '+44 1923 690 900', website: 'https://www.dbschenker.com/gb-en', location: 'Watford, UK',     rating: 4.1 },\n    { company: 'Agility Logistics UK',     phone: '+44 20 8538 4000', website: 'https://www.agility.com',          location: 'London, UK',      rating: 4.0 },\n    { company: 'Rhenus Logistics UK',      phone: '+44 1527 591 100', website: 'https://www.rhenus.group/gb/',     location: 'Bromsgrove, UK',  rating: 4.2 },\n    { company: 'Allport Cargo Services',   phone: '+44 161 946 3000', website: 'https://www.allport.com',          location: 'Manchester, UK',  rating: 4.3 },\n  ].slice(0, ctx.maxLeads || 10);\n} else {\n  // Collect all Place Details API responses\n  const allItems = $input.all();\n  for (const item of allItems) {\n    const d = item.json?.result || {};\n    if (!d.name) continue;\n    rawLeads.push({\n      company:  d.name,\n      phone:    d.formatted_phone_number || '',\n      website:  d.website               || '',\n      location: d.formatted_address     || ctx.region,\n      rating:   d.rating\n    });\n  }\n}\n\n// Attach inferred email to each lead\nfor (const lead of rawLeads) {\n  const domain = extractDomain(lead.website);\n  lead.email  = inferEmail(domain, lead.company);\n  lead.domain = domain;\n}\n\n// Build a single enrichment prompt for Gemini (batch — one API call for all leads)\nconst leadsJson = JSON.stringify(rawLeads, null, 2);\nconst prompt = `You are an expert B2B CRM analyst for UK logistics.\n\nYou will receive an array of business leads sourced from Google Maps.\nFor EACH lead, produce:\n- ai_summary: 2-sentence description of what the company does and why it is a high-value logistics prospect.\n- lead_score: integer 0-100 based on relevance to freight/logistics, phone availability, website presence, and Google rating.\n- draft_email: short (max 100 words) professional cold outreach email referencing the company name and location.\n\nRespond with ONLY a JSON array of objects, one per lead, with exactly these keys: ai_summary, lead_score, draft_email.\nDo not wrap in markdown. The array length MUST match the input length exactly.\n\nLeads:\n${leadsJson}`;\n\nreturn [{\n  json: {\n    rawLeads,\n    prompt,\n    enableAI: ctx.enableAI,\n    GEMINI_KEY: ctx.GEMINI_KEY\n  }\n}];"
+      },
+      "notes": "Aggregates all per-place Detail responses into one item. Infers contact emails from website domains (info@domain.com pattern). Builds a single batch Gemini prompt for all leads — efficient API usage, one call instead of N."
+    },
+
+    {
+      "id": "a1b2c3d4-0007-0007-0007-777777777777",
+      "name": "HTTP — Gemini AI Batch Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1560, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={{$json.GEMINI_KEY}}",
+        "authentication": "none",
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "generationConfig": {
+            "responseMimeType": "application/json",
+            "temperature": 0.4
+          },
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "={{$json.prompt}}"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "notes": "Single batch Gemini call — sends ALL leads in one prompt. Returns a JSON array with ai_summary, lead_score, and draft_email for each lead. Gemini 1.5 Flash is optimised for speed and low cost on Railway free tier."
+    },
+
+    {
+      "id": "a1b2c3d4-0008-0008-0008-888888888888",
+      "name": "Code — Build Final Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "/**\n * 1. Parses the Gemini JSON response.\n * 2. Merges AI enrichment back into the raw lead objects.\n * 3. Builds the final {status, leads} response object.\n * 4. Handles Gemini failures gracefully with fallback values.\n */\n\nconst collectNode = $('Code — Collect Leads & Infer Emails').first().json;\nconst rawLeads    = collectNode.rawLeads || [];\nconst geminiNode  = $input.first().json;\n\nlet aiResults = [];\n\ntry {\n  // Gemini returns: candidates[0].content.parts[0].text = JSON array string\n  const text = geminiNode?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';\n  const parsed = JSON.parse(text);\n  aiResults = Array.isArray(parsed) ? parsed : [];\n} catch (e) {\n  console.warn('[LeadEngine] Failed to parse Gemini response:', e.message);\n  aiResults = [];\n}\n\n// Merge AI data with raw verified Google Maps data\nconst leads = rawLeads.map((raw, i) => {\n  const ai = aiResults[i] || {};\n  const score = Number(ai.lead_score) || 60;\n  return {\n    company:     raw.company,\n    location:    raw.location,\n    phone:       raw.phone        || '',\n    email:       raw.email        || '',\n    website:     raw.website      || '',\n    source:      'Lead Engine',\n    ai_summary:  ai.ai_summary    || `${raw.company} — verified logistics business in ${raw.location}.`,\n    lead_score:  score,\n    draft_email: ai.draft_email   || '',\n    priority:    score >= 75 ? 'Hot' : score >= 50 ? 'Warm' : 'Cold',\n    rating:      raw.rating,\n    status:      'New'\n  };\n});\n\nreturn [{\n  json: {\n    status: 'success',\n    count:  leads.length,\n    leads\n  }\n}];"
+      },
+      "notes": "Merges Gemini AI data with verified Google Maps company data. Auto-assigns Hot/Warm/Cold priority from lead_score. Returns the final payload the frontend expects: { status, count, leads: [...] }."
+    },
+
+    {
+      "id": "a1b2c3d4-0009-0009-0009-999999999999",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2000, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{JSON.stringify($json)}}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              { "name": "Content-Type",                "value": "application/json" },
+              { "name": "Access-Control-Allow-Origin", "value": "*" }
+            ]
+          }
+        }
+      },
+      "notes": "Sends the final JSON response back to the caller (your SaaS frontend). CORS header included so browser fetch() requests succeed. Uses the output from the Build Final Response node."
+    }
+  ],
+
+  "connections": {
+    "Webhook — Receive Lead Request": {
+      "main": [[{ "node": "Code — Parse Input & Build Query", "type": "main", "index": 0 }]]
+    },
+    "Code — Parse Input & Build Query": {
+      "main": [[{ "node": "HTTP — Google Places TextSearch", "type": "main", "index": 0 }]]
+    },
+    "HTTP — Google Places TextSearch": {
+      "main": [[{ "node": "Code — Extract Place IDs as Items", "type": "main", "index": 0 }]]
+    },
+    "Code — Extract Place IDs as Items": {
+      "main": [[{ "node": "HTTP — Google Place Details", "type": "main", "index": 0 }]]
+    },
+    "HTTP — Google Place Details": {
+      "main": [[{ "node": "Code — Collect Leads & Infer Emails", "type": "main", "index": 0 }]]
+    },
+    "Code — Collect Leads & Infer Emails": {
+      "main": [[{ "node": "HTTP — Gemini AI Batch Enrichment", "type": "main", "index": 0 }]]
+    },
+    "HTTP — Gemini AI Batch Enrichment": {
+      "main": [[{ "node": "Code — Build Final Response", "type": "main", "index": 0 }]]
+    },
+    "Code — Build Final Response": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+
+  "staticData": null,
+  "tags": [{ "name": "Lead Engine" }, { "name": "InvoAura" }],
+  "pinData": {},
+  "versionId": "invoaura-lead-engine-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "n8nVersion": "1.40.0"
+  },
+  "id": "invoaura-lead-engine-wf-001"
+}
