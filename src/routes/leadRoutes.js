@@ -3,6 +3,6 @@ import { scrapeLeads } from "../controllers/leadController.js";
 
 const router = Router();
 
-router.post("/scrape-leads", scrapeLeads);
+router.post("/discover-opportunities", scrapeLeads);
 
 export default router;
