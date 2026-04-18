@@ -2,12 +2,15 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { AppError, createAppError } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
-import { expandKeywords, SUPPORTED_AI_PROVIDERS } from "../services/aiService.js";
+import { expandKeywords, SUPPORTED_AI_PROVIDERS, generateLeadEnrichment, resolveAiSelection, requestStructuredJson } from "../services/aiService.js";
 import { collectGoogleLeads } from "../services/googleService.js";
+import { collectDirectoryLeads } from "../services/directoriesService.js";
+import { enrichLeadsWithApollo } from "../services/apolloService.js";
 import { dedupeLeads } from "../services/dedupeService.js";
 import { enrichLeadEmails } from "../services/emailService.js";
-import { enrichLeads } from "../services/enrichmentService.js";
-import { saveUserLeads } from "../services/firebaseService.js";
+import { enrichLeads, discoverLeadContactInfo } from "../services/enrichmentService.js";
+import { saveUserLeads, wipeUserLeads } from "../services/firebaseService.js";
+import * as importService from "../services/importService.js";
 
 const aiProviderSchema = z.preprocess(
   (value) => (typeof value === "string" ? value.trim().toLowerCase() : value),
@@ -103,22 +106,11 @@ export async function scrapeLeads(req, res, next) {
       throw createAppError(400, "userId is required in the request body or x-user-id header.");
     }
 
-    if (parsedBody.sources.linkedin) {
-      throw createAppError(400, "LinkedIn scraping is intentionally not supported.");
-    }
-
-    if (!parsedBody.sources.google) {
+    if (!parsedBody.sources.google && !parsedBody.sources.directories) {
       throw createAppError(
         400,
-        "Google Maps must be enabled because it is the only configured real lead source."
+        "At least one source (Google Maps or Directories) must be enabled."
       );
-    }
-
-    if (parsedBody.sources.directories) {
-      logger.warn("Directory source requested without a configured provider. Skipping directories.", {
-        requestId,
-        userId
-      });
     }
 
     logger.info("Lead scrape started.", {
@@ -144,18 +136,36 @@ export async function scrapeLeads(req, res, next) {
       requestId,
       queryCount: searchKeywords.length
     });
-    const rawLeads = await collectGoogleLeads({
-      queries: searchKeywords,
-      region: parsedBody.region,
-      limit: parsedBody.limit
-    });
+    // ── Source Collection (run enabled sources in parallel) ──────────────
+    const sourceJobs = [];
+
+    if (parsedBody.sources.google) {
+      sourceJobs.push(
+        collectGoogleLeads({ queries: searchKeywords, region: parsedBody.region, limit: parsedBody.limit })
+          .catch(err => { logger.warn("Google source failed.", { message: err.message }); return []; })
+      );
+    }
+
+    if (parsedBody.sources.directories) {
+      logger.info("Stage: directory source (Companies House / Yelp)", { requestId });
+      sourceJobs.push(
+        collectDirectoryLeads({ queries: searchKeywords, region: parsedBody.region, limit: parsedBody.limit })
+          .catch(err => { logger.warn("Directory source failed.", { message: err.message }); return []; })
+      );
+    }
+
+    const sourceResults = await Promise.all(sourceJobs);
+    const rawLeads = sourceResults.flat();
 
     logger.info("Stage: in-memory dedupe", {
       requestId,
       rawLeads: rawLeads.length
     });
     const dedupedLeads = dedupeLeads(rawLeads);
-    const leadCandidates = dedupedLeads.slice(0, Math.max(parsedBody.limit * 2, 20));
+    // Auto-resolve contact info for directory leads (Companies House/Yelp)
+    const discoveredLeads = await discoverLeadContactInfo(dedupedLeads);
+
+    const leadCandidates = discoveredLeads.slice(0, Math.max(parsedBody.limit * 2, 20));
 
     logger.info("Stage: website email discovery", {
       requestId,
@@ -163,11 +173,16 @@ export async function scrapeLeads(req, res, next) {
     });
     const leadsWithEmails = await enrichLeadEmails(leadCandidates);
 
+    // ── LinkedIn enrichment via Apollo (optional, skips if no API key) ──
+    const linkedinEnriched = parsedBody.sources.linkedin
+      ? await enrichLeadsWithApollo(leadsWithEmails)
+      : leadsWithEmails;
+
     logger.info("Stage: AI enrichment", {
       requestId,
-      dedupedLeads: leadsWithEmails.length
+      dedupedLeads: linkedinEnriched.length
     });
-    const enrichedLeads = await enrichLeads(leadsWithEmails, aiSelections.leadEnrichment);
+    const enrichedLeads = await enrichLeads(linkedinEnriched, aiSelections.leadEnrichment);
     const limitedLeads = enrichedLeads.slice(0, parsedBody.limit);
 
     logger.info("Stage: Firestore persistence", {
@@ -231,6 +246,196 @@ export async function scrapeLeads(req, res, next) {
       return;
     }
 
+    next(error);
+  }
+}
+
+export async function generateEmail(req, res, next) {
+  try {
+    const { lead, aiProvider, aiModel } = req.body;
+    if (!lead || !lead.company) {
+      throw createAppError(400, "Valid lead object with company name required.");
+    }
+    
+    // Generate email using the selected model
+    const requestedSelection = {
+      provider: aiProvider,
+      model: aiModel
+    };
+    
+    const defaultEnrichment = {
+      lead_score: 50,
+      ai_summary: "No summary available.",
+      draft_email: "Failed to generate email."
+    };
+    
+    logger.info("Generating discrete email outreach via AI", { company: lead.company, ...requestedSelection });
+    
+    const enriched = await generateLeadEnrichment(lead, defaultEnrichment, requestedSelection);
+    
+    res.status(200).json({
+      status: "success",
+      email: enriched.draft_email,
+      reasoning: enriched.ai_summary,
+      score: enriched.lead_score
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Controller for importing leads from file upload
+ */
+export async function importLeads(req, res, next) {
+  const requestId = req.requestId || randomUUID();
+  try {
+    if (!req.file) {
+      throw createAppError(400, "No file uploaded.");
+    }
+
+    const userId = getUserId(req, {});
+    const buffer = req.file.buffer;
+    const filename = req.file.originalname.toLowerCase();
+
+    let rawData = [];
+    if (filename.endsWith(".csv")) {
+      rawData = await importService.parseCsv(buffer);
+    } else if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
+      rawData = await importService.parseExcel(buffer);
+    } else {
+      throw createAppError(400, "Unsupported file format. Please upload CSV or Excel.");
+    }
+
+    if (!rawData || rawData.length === 0) {
+      return res.status(200).json({
+        status: "success",
+        message: "File is empty or could not be parsed.",
+        count: 0,
+        leads: []
+      });
+    }
+
+    const leads = rawData.map(importService.mapImportedLead);
+    
+    // Filter out invalid leads (must have company name)
+    const validLeads = leads.filter(l => l.company && l.company !== "Unknown");
+
+    if (validLeads.length === 0) {
+      return res.status(200).json({
+        status: "success",
+        message: "No valid business records found (missing Company Name).",
+        count: 0,
+        leads: []
+      });
+    }
+
+    // Save to Firebase using the existing persistence service
+    const saveResult = await saveUserLeads({
+      userId,
+      leads: validLeads
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully imported ${saveResult.saved} leads.`,
+      count: saveResult.saved,
+      skipped: saveResult.skipped,
+      leads: validLeads.slice(0, 50) // Return first 50 for UI confirmation
+    });
+
+  } catch (error) {
+    logger.error("Lead import failure", { requestId, error: error.message });
+    next(error);
+  }
+}
+
+export async function enrichSingleLeadAi(req, res, next) {
+  try {
+    const { lead, aiProvider, aiModel } = req.body;
+    if (!lead || !lead.company) {
+      throw createAppError(400, "Valid lead object with company name required.");
+    }
+
+    logger.info("Performing Deep AI Enrichment for single lead", { 
+      company: lead.company, 
+      website: lead.website 
+    });
+
+    // 1. Resolve missing website via Google Maps discovery
+    let targetLead = lead;
+    if (!targetLead.website) {
+      const discovery = await discoverLeadContactInfo([targetLead]);
+      targetLead = discovery[0];
+    }
+
+    // 2. More aggressive email discovery
+    const enrichedWithEmails = await enrichLeadEmails([targetLead]);
+    const leadWithEmail = enrichedWithEmails[0];
+
+    // 2. If no email found via scraping, use AI to search/infer
+    const selection = resolveAiSelection("leadEnrichment", { provider: aiProvider, model: aiModel });
+    
+    // Custom prompt to "Search/Infer" email if missing
+    const prompt = [
+      "Find or infer the best contact email for this business.",
+      "If you cannot find a specific email, suggest common formats like info@ or contact@ based on the domain.",
+      "Also identify the likely decision maker (CEO/Director) name if possible.",
+      "Return only a JSON object with: email (string), contactName (string), confidence (0-100).",
+      `Business: ${JSON.stringify({
+        company: lead.company,
+        website: lead.website,
+        location: lead.location
+      })}`
+    ].join("\n");
+
+    const aiSearch = await requestStructuredJson(prompt, "AI Email Inference", selection);
+
+    const finalResult = {
+      ...leadWithEmail,
+      email: leadWithEmail.email || aiSearch.email || null,
+      contactName: lead.contactName || aiSearch.contactName || null
+    };
+
+    res.status(200).json({
+      status: "success",
+      lead: finalResult,
+      confidence: aiSearch.confidence || 50
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Controller for wiping all leads or specific IDs for a user from a specific collection
+ */
+export async function wipeLeads(req, res, next) {
+  const requestId = req.requestId || randomUUID();
+  try {
+    const { collectionName, ids } = req.body;
+    const userId = getUserId(req, {});
+
+    if (!userId) {
+      throw createAppError(400, "userId is required to wipe data.");
+    }
+
+    const targetCollection = collectionName === "ai_leads" ? "ai_leads" : "leads";
+    
+    logger.info("Bulk wipe requested", { requestId, userId, targetCollection, count: ids?.length || "ALL" });
+    
+    const result = await wipeUserLeads({ 
+      userId, 
+      collectionName: targetCollection,
+      ids: Array.isArray(ids) ? ids : []
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: `Successfully deleted ${result.deletedCount} leads from ${targetCollection}.`,
+      count: result.deletedCount
+    });
+  } catch (error) {
     next(error);
   }
 }

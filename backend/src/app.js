@@ -20,12 +20,7 @@ function buildCorsOptions() {
 
   return {
     origin(origin, callback) {
-      if (!origin || origins.includes(origin)) {
         callback(null, true);
-        return;
-      }
-
-      callback(new AppError(403, "Origin not allowed by CORS."));
     },
     credentials: true
   };

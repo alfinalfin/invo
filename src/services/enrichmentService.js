@@ -2,6 +2,7 @@ import { chunkArray } from "../utils/batch.js";
 import { logger } from "../utils/logger.js";
 import { getOutboundProfile } from "../config/outboundProfile.js";
 import { generateLeadEnrichment } from "./aiService.js";
+import { resolveSingleBusinessContact } from "./googleService.js";
 
 const ENRICHMENT_BATCH_SIZE = 5;
 
@@ -32,7 +33,6 @@ function buildFallbackLeadScore(lead) {
 }
 
 export function buildFallbackEnrichment(lead) {
-  const outboundProfile = getOutboundProfile();
   const score = buildFallbackLeadScore(lead);
   const company = lead.company || "this company";
   const location = lead.location || "their market";
@@ -46,53 +46,58 @@ export function buildFallbackEnrichment(lead) {
           ? "The business has a website, which signals stronger outbound readiness."
           : "A website was not found, so phone-led outreach may convert better."
     }`,
-    draft_email:
-      `Subject: Dedicated same-day support for ${company}\n\n` +
-      `Hi ${company} team,\n\n` +
-      `I'm reaching out from ${outboundProfile.companyName}. ${outboundProfile.positioning}\n\n` +
-      `We regularly support ${outboundProfile.targetAudience} with subcontract, overflow, and urgent same-day work when they need a dependable partner to execute quickly and communicate professionally from collection through delivery.\n\n` +
-      `If your team ever needs support covering time-critical freight around ${location}, we'd be glad to help. ${outboundProfile.callToAction}\n\n` +
-      `Best regards,\n` +
-      `${outboundProfile.signatureName}\n` +
-      `${outboundProfile.signatureTitle}\n` +
-      `${outboundProfile.signaturePhone}\n` +
-      `${outboundProfile.signatureEmail}\n` +
-      `${outboundProfile.signatureWebsite}`
+    draft_email: ""
   };
 }
 
-export async function enrichLeads(leads, aiOptions = {}) {
-  const enrichedLeads = [];
-
-  for (const leadBatch of chunkArray(leads, ENRICHMENT_BATCH_SIZE)) {
-    const settledEnrichment = await Promise.allSettled(
-      leadBatch.map((lead) =>
-        generateLeadEnrichment(lead, buildFallbackEnrichment(lead), aiOptions)
-      )
-    );
-
-    settledEnrichment.forEach((result, index) => {
-      const lead = leadBatch[index];
-
-      if (result.status === "fulfilled") {
-        enrichedLeads.push({
-          ...lead,
-          ...result.value
-        });
-        return;
-      }
-
-      logger.warn("Lead enrichment batch item failed. Using fallback.", {
-        company: lead.company,
-        message: result.reason?.message
-      });
-
-      enrichedLeads.push({
-        ...lead,
-        ...buildFallbackEnrichment(lead)
-      });
-    });
+export async function discoverLeadContactInfo(leads) {
+  const needsDiscovery = leads.filter(l => !l.website && (l.source === "companies_house" || l.source === "yelp"));
+  
+  if (needsDiscovery.length === 0) {
+    return leads;
   }
 
-  return enrichedLeads;
+  logger.info("Starting automated contact discovery for leads missing websites.", { 
+    total: leads.length,
+    searching: needsDiscovery.length 
+  });
+  
+  const discoveredMap = new Map();
+  
+  // Process in small batches to respect rate limits
+  for (const batch of chunkArray(needsDiscovery, 5)) {
+    const batchResults = await Promise.allSettled(
+      batch.map(async (lead) => {
+        const contact = await resolveSingleBusinessContact(lead.company, lead.location);
+        return { company: lead.company, contact };
+      })
+    );
+    
+    batchResults.forEach((res) => {
+      if (res.status === "fulfilled" && res.value.contact) {
+        discoveredMap.set(res.value.company, res.value.contact);
+      }
+    });
+  }
+  
+  return leads.map(lead => {
+    const discovery = discoveredMap.get(lead.company);
+    if (discovery) {
+      return {
+        ...lead,
+        ...discovery,
+        discovery_status: "resolved"
+      };
+    }
+    return lead;
+  });
+}
+
+export async function enrichLeads(leads, aiOptions = {}) {
+  // We now skip costly AI generation during bulk scraping.
+  // The AI is exclusively invoked 'on-demand' in the frontend.
+  return leads.map(lead => ({
+    ...lead,
+    ...buildFallbackEnrichment(lead)
+  }));
 }

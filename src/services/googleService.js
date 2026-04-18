@@ -353,3 +353,35 @@ export async function collectGoogleLeads({ queries, region, limit }) {
 
   return leads;
 }
+
+/**
+ * Resolves a single business contact from Google Places.
+ * Useful for enriching directory leads (like Companies House) with websites.
+ */
+export async function resolveSingleBusinessContact(company, location) {
+  try {
+    const query = `${company} ${location}`;
+    const results = await searchBusinesses(query, location);
+
+    if (!results || results.length === 0) {
+      return null;
+    }
+
+    // Often the first Google result is the best match
+    const bestMatch = results[0];
+    const details = await fetchPlaceDetails(bestMatch.place_id);
+
+    return {
+      phone: cleanPhoneNumber(details.formatted_phone_number),
+      website: cleanWebsite(details.website),
+      location: details.formatted_address || bestMatch.formatted_address || bestMatch.vicinity
+    };
+  } catch (err) {
+    logger.warn("Single business contact resolution failed.", {
+      company,
+      location,
+      message: err.message
+    });
+    return null;
+  }
+}

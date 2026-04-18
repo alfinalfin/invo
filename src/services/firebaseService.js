@@ -121,3 +121,47 @@ export async function saveUserLeads({ userId, leads }) {
     throw normalizeFirestoreError(error);
   }
 }
+
+export async function wipeUserLeads({ userId, collectionName = LEADS_COLLECTION, ids = [] }) {
+  if (!userId) {
+    throw createAppError(400, "A userId is required to wipe leads.");
+  }
+
+  const db = getFirestoreDb();
+  try {
+    let snapshot;
+    if (ids && ids.length > 0) {
+      // Fetch specifically by ID
+      const refs = ids.map(id => db.collection(collectionName).doc(id));
+      snapshot = await db.getAll(...refs);
+    } else {
+      // Fetch all for user
+      snapshot = await db.collection(collectionName).where("userId", "==", userId).get();
+    }
+    
+    const docs = Array.isArray(snapshot) ? snapshot : snapshot.docs;
+    if (!docs || docs.length === 0) {
+      return { deletedCount: 0 };
+    }
+
+    const batches = chunkArray(docs, FIRESTORE_BATCH_SIZE);
+    let deletedCount = 0;
+
+    for (const docBatch of batches) {
+      const batch = db.batch();
+      for (const doc of docBatch) {
+        if (doc.exists || (doc.ref && doc.id)) {
+          batch.delete(doc.ref);
+          deletedCount++;
+        }
+      }
+      await batch.commit();
+    }
+
+    logger.info("Bulk deletion completed.", { userId, collectionName, deletedCount, isPartial: ids.length > 0 });
+    return { deletedCount };
+  } catch (error) {
+    logger.error("Failed to perform bulk deletion.", { userId, collectionName, message: error.message });
+    throw normalizeFirestoreError(error);
+  }
+}

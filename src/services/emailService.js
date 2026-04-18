@@ -2,10 +2,10 @@ import { chunkArray } from "../utils/batch.js";
 import { fetchTextWithRetry } from "../utils/http.js";
 import { logger } from "../utils/logger.js";
 
-const EMAIL_BATCH_SIZE = 4;
-const MAX_PAGES_PER_WEBSITE = 4;
-const MAX_HTML_LENGTH = 250000;
-const COMMON_CONTACT_PATHS = ["/contact", "/contact-us", "/about", "/about-us", "/team"];
+const EMAIL_BATCH_SIZE = 12;         // run 12 website scrapes in parallel
+const MAX_PAGES_PER_WEBSITE = 2;     // homepage + 1 contact page max
+const MAX_HTML_LENGTH = 150000;      // trim large pages faster
+const COMMON_CONTACT_PATHS = ["/contact", "/contact-us"];
 const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
 const PUBLIC_EMAIL_PROVIDERS = new Set([
   "gmail.com",
@@ -163,20 +163,22 @@ function chooseBestEmail(emails, websiteUrl) {
 }
 
 async function discoverEmailForLead(lead) {
+  // Already have an email (e.g. from Apollo enrichment) — skip web scrape
+  if (lead.email) {
+    return lead;
+  }
+
   const websiteUrl = normalizeWebsiteUrl(lead.website);
 
   if (!websiteUrl) {
-    return {
-      ...lead,
-      email: null
-    };
+    return { ...lead, email: null };
   }
 
   try {
     const homepage = await fetchTextWithRetry(websiteUrl.toString(), {
-      timeoutMs: 12000,
-      retries: 1,
-      retryDelayMs: 1000,
+      timeoutMs: 5000,   // fast-fail — slow sites aren't worth waiting for
+      retries: 0,        // no retries — move on quickly
+      retryDelayMs: 500,
       label: "Website homepage fetch"
     });
     const homepageHtml = homepage.text.slice(0, MAX_HTML_LENGTH);
@@ -189,9 +191,9 @@ async function discoverEmailForLead(lead) {
       const settledPages = await Promise.allSettled(
         secondaryUrls.map((url) =>
           fetchTextWithRetry(url, {
-            timeoutMs: 10000,
-            retries: 1,
-            retryDelayMs: 750,
+            timeoutMs: 4000,   // fast-fail on contact pages too
+            retries: 0,
+            retryDelayMs: 500,
             label: "Website contact page fetch"
           })
         )

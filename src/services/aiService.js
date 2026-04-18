@@ -244,7 +244,7 @@ async function requestOpenAiCompatibleJson(prompt, label, selection) {
   return parseJsonResponse(extractOpenAiCompatibleText(payload), label, selection);
 }
 
-async function requestStructuredJson(prompt, label, selection) {
+export async function requestStructuredJson(prompt, label, selection) {
   if (selection.provider === "gemini") {
     return requestGeminiJson(prompt, label, selection);
   }

@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { scrapeLeads } from "../controllers/leadController.js";
+import multer from "multer";
+import * as leadController from "../controllers/leadController.js";
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/discover-opportunities", scrapeLeads);
+router.post("/discover-opportunities", leadController.scrapeLeads);
+router.post("/generate-email", leadController.generateEmail);
+router.post("/enrich-single-lead-ai", leadController.enrichSingleLeadAi);
+router.post("/import-leads", upload.single("file"), leadController.importLeads);
+router.post("/wipe-leads", leadController.wipeLeads);
 
 export default router;
