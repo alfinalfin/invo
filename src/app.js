@@ -20,12 +20,12 @@ function buildCorsOptions() {
 
   return {
     origin(origin, callback) {
-      if (!origin || origins.includes(origin)) {
+      if (!origin || origins.includes(origin) || origin.includes("invoaura-crm.web.app") || origin.includes("invoaura-crm.firebaseapp.com")) {
         callback(null, true);
         return;
       }
 
-      callback(new AppError(403, "Origin not allowed by CORS."));
+      callback(new AppError(403, `Origin not allowed by CORS: ${origin}`));
     },
     credentials: true
   };
