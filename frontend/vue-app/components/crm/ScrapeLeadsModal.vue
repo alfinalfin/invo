@@ -194,8 +194,8 @@ async function startScraping() {
       const timer = setTimeout(() => controller.abort(), 600_000); // 10 minutes timeout for deep AI scraping
       
       const apiEndpoint = process.env.NODE_ENV === "development" 
-        ? "http://localhost:5000/api/scrape-leads" 
-        : "https://invo-bgjy.onrender.com/api/scrape-leads";
+        ? "http://localhost:5000/api/discover-opportunities" 
+        : "https://invo-bgjy.onrender.com/api/discover-opportunities";
         
       try {
         const res = await fetch(apiEndpoint, {
