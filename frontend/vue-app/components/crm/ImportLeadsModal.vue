@@ -70,8 +70,9 @@ async function startImport() {
   formData.append('file', file.value);
   
   try {
-    const config = useRuntimeConfig();
-    const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/import-leads`;
+    const apiEndpoint = process.env.NODE_ENV === "development" 
+        ? "http://localhost:5000/api/import-leads" 
+        : "https://invo-bgjy.onrender.com/api/import-leads";
 
     const response = await fetch(apiEndpoint, {
       method: 'POST',

@@ -193,8 +193,9 @@ async function startScraping() {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 600_000); // 10 minutes timeout for deep AI scraping
       
-      const config = useRuntimeConfig();
-      const apiEndpoint = `${config.public.apiBase || 'http://129.154.254.139'}/api/scrape-leads`;
+      const apiEndpoint = process.env.NODE_ENV === "development" 
+        ? "http://localhost:5000/api/scrape-leads" 
+        : "https://invo-bgjy.onrender.com/api/scrape-leads";
         
       try {
         const res = await fetch(apiEndpoint, {
@@ -419,14 +420,7 @@ function viewLeads() {
               </p>
             </div>
             <div class="flex items-center gap-2">
-              <button
-                v-if="viewState === 'progress'"
-                @click="toggleMinimize"
-                class="rounded-full p-2 text-outline hover:bg-surface-variant hover:text-on-surface transition-colors"
-                title="Minimize Engine"
-              >
-                <Minimize2 class="h-5 w-5" stroke-width="2.5" />
-              </button>
+
               <button
                 @click="closeModal"
                 class="rounded-full p-2 text-outline hover:bg-surface-variant hover:text-on-surface transition-colors"

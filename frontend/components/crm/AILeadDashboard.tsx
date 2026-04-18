@@ -92,7 +92,7 @@ export function AILeadDashboard() {
 
     try {
       // We start the visual pipeline immediately, but actually fire the request
-      const res = await fetch("http://129.154.254.139/api/scrape-leads", {
+      const res = await fetch("https://invo-bgjy.onrender.com/api/scrape-leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

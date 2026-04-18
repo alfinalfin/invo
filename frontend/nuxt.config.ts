@@ -107,7 +107,7 @@ export default defineNuxtConfig({
       apiBase:
         process.env.NUXT_PUBLIC_API_BASE ||
         process.env.NEXT_PUBLIC_API_BASE ||
-        "http://129.154.254.139",
+        "https://invo-bgjy.onrender.com",
     },
   },
   postcss: {

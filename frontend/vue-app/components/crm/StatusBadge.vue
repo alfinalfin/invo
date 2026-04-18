@@ -8,7 +8,9 @@ const props = defineProps<{
 
 const styles: Record<LeadStatus, string> = {
   New: "bg-sky-500/12 text-sky-700 dark:text-sky-300",
+  Called: "bg-blue-500/12 text-blue-700 dark:text-blue-300",
   Contacted: "bg-amber-500/12 text-amber-700 dark:text-amber-300",
+  Appointment: "bg-fuchsia-500/12 text-fuchsia-700 dark:text-fuchsia-300",
   "In progress": "bg-indigo-500/12 text-indigo-700 dark:text-indigo-300",
   Pending: "bg-violet-500/12 text-violet-700 dark:text-violet-300",
   Converted: "bg-emerald-500/12 text-emerald-700 dark:text-emerald-300",
