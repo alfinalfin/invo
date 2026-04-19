@@ -165,3 +165,38 @@ export async function wipeUserLeads({ userId, collectionName = LEADS_COLLECTION,
     throw normalizeFirestoreError(error);
   }
 }
+
+/**
+ * Update a single lead for a user in a specific collection
+ */
+export async function updateUserLead({ userId, leadId, collectionName = LEADS_COLLECTION, updates }) {
+  if (!userId || !leadId) {
+    throw createAppError(400, "A userId and leadId are required to update a lead.");
+  }
+
+  const db = getFirestoreDb();
+  try {
+    const docRef = db.collection(collectionName).doc(leadId);
+    
+    // Ensure the document exists and belongs to the user
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      throw createAppError(404, `Lead with ID ${leadId} not found.`);
+    }
+    
+    if (doc.get("userId") !== userId) {
+      throw createAppError(403, "Access denied. Cannot update leads belonging to another user.");
+    }
+
+    await docRef.update({
+      ...updates,
+      updatedAt: Timestamp.now()
+    });
+
+    logger.info("Lead update successful", { userId, leadId, collectionName });
+    return { success: true };
+  } catch (error) {
+    logger.error("Lead update failed", { userId, leadId, collectionName, message: error.message });
+    throw normalizeFirestoreError(error);
+  }
+}

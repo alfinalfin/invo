@@ -532,6 +532,22 @@ function viewLeads() {
                   </label>
                 </label>
 
+                <!-- Companies House -->
+                <label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-variant/50 cursor-pointer transition-colors border-t border-outline-variant/10">
+                  <div class="flex items-center gap-3">
+                    <div class="text-emerald-500 bg-emerald-500/10 p-2 rounded-lg"><Database class="w-4 h-4" /></div>
+                    <div>
+                      <div class="text-[13px] font-extrabold text-on-surface">UK Companies House</div>
+                      <div class="text-[11px] font-medium text-outline">Search official UK business registry</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex cursor-pointer items-center pr-1">
+                    <div class="h-5 w-9 rounded-full transition-colors duration-300" :class="sourceDirectories ? 'bg-emerald-500' : 'bg-outline-variant/40'"></div>
+                    <div class="absolute left-[2px] top-[2px] h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-300" :class="sourceDirectories ? 'translate-x-4' : ''"></div>
+                    <input type="checkbox" v-model="sourceDirectories" class="hidden" />
+                  </label>
+                </label>
+
                 <!-- LinkedIn -->
                 <label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-variant/50 cursor-pointer transition-colors border-t border-outline-variant/10">
                   <div class="flex items-center gap-3">

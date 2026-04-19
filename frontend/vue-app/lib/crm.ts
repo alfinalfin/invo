@@ -46,6 +46,13 @@ export type DateRangeOption = (typeof dateRangeOptions)[number];
 export type SortOption = (typeof sortOptions)[number];
 export type DashboardSection = (typeof dashboardSections)[number];
 
+export type Employee = {
+  name: string;
+  role: string;
+  linkedinUrl?: string | null;
+  email?: string | null;
+};
+
 export type LeadRecord = {
   id: string;
   name: string;
@@ -85,6 +92,9 @@ export type LeadRecord = {
   website?: string;
   discovery_status?: string;
   contactName?: string;
+  contactTitle?: string;
+  linkedinUrl?: string;
+  employees?: Employee[];
 };
 
 export type MetricCard = {

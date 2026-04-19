@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { Bot, Mail, Phone, Sparkles, BadgeCheck, X, Globe, Trash2 as TrashIcon, RefreshCcw, Database, ExternalLink } from "lucide-vue-next";
-import type { LeadRecord } from "~/lib/crm";
+import type { LeadRecord, Employee } from "~/lib/crm";
 
 const config = useRuntimeConfig();
 const API_BASE = (config.public.apiBase as string)?.replace(/\/$/, '') || 'https://invo-bgjy.onrender.com';
@@ -45,6 +45,7 @@ interface Lead {
   timeline?: TimelineEvent[];
   draftEmailPreview?: string;
   rawSource: string;
+  employees?: Employee[];
 }
 
 function timeAgo(dateString: string) {
@@ -79,6 +80,7 @@ const localEmails = ref<Record<string, string>>({});
 const localContactNames = ref<Record<string, string>>({});
 const localContactTitles = ref<Record<string, string>>({});
 const localLinkedinUrls = ref<Record<string, string>>({});
+const localEmployees = ref<Record<string, Employee[]>>({});
 
 const isEnriching = ref<string | null>(null);
 
@@ -106,6 +108,7 @@ const aiLeads = computed<Lead[]>(() => {
       contactName: localContactNames.value[l.id] || (l as any).contactName || "",
       contactTitle: localContactTitles.value[l.id] || (l as any).contactTitle || "",
       linkedinUrl: localLinkedinUrls.value[l.id] || (l as any).linkedinUrl || "",
+      employees: localEmployees.value[l.id] || l.employees || [],
       reasoning: localReasoning.value[l.id] ? localReasoning.value[l.id].split(/[\n.]/).map(s=>s.trim()).filter(r => r.length > 5) : ((l.ai_summary || l.customerNotes) ? (l.ai_summary || l.customerNotes)!.split(/[\n.]/).map(s=>s.trim()).filter(r => r.length > 5) : [
         `${l.company || 'This company'} is a prospective lead located near ${l.pickupAddress || 'their target market'}.`,
         `Identified via ${l.source || 'automated extraction'} and marked for outbound review.`,
@@ -340,7 +343,10 @@ async function generateOutreach(id: string, event: Event) {
   try {
     const res = await fetch(`${API_BASE}/api/generate-email`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "x-user-id": "local-dev-user-123"
+      },
       body: JSON.stringify({
         lead: {
           company: lead.company,
@@ -391,7 +397,10 @@ async function enrichWithAi(id: string) {
   try {
     const res = await fetch(`${API_BASE}/api/enrich-single-lead-ai`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "x-user-id": "local-dev-user-123"
+      },
       body: JSON.stringify({
         lead: {
           company: lead.company,
@@ -412,6 +421,7 @@ async function enrichWithAi(id: string) {
         if (data.lead.contactName) localContactNames.value[id] = data.lead.contactName;
         if (data.lead.contactTitle) localContactTitles.value[id] = data.lead.contactTitle;
         if (data.lead.linkedinUrl) localLinkedinUrls.value[id] = data.lead.linkedinUrl;
+        if (data.lead.employees) localEmployees.value[id] = data.lead.employees;
 
         const foundEmail = data.lead.email;
         const foundContact = data.lead.contactName;
@@ -493,6 +503,19 @@ function selectAiProvider(pId: string) {
   const currModels = (aiModels as any)[pId];
   const def = currModels.find((m: any) => m.recommended) || currModels[0];
   aiModel.value = def.id;
+}
+
+function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
+  if (!url) return null;
+  const cleaned = url.trim().toLowerCase();
+  if (['none', 'unknown', 'null', 'n/a', ''].includes(cleaned)) return null;
+  
+  if (cleaned.startsWith('http')) return url;
+  if (cleaned.startsWith('linkedin.com/')) return `https://${url}`;
+  if (cleaned.startsWith('www.linkedin.com/')) return `https://${url}`;
+  
+  // Assume it's a slug
+  return `https://linkedin.com/in/${url}`;
 }
 </script>
 
@@ -887,23 +910,77 @@ function selectAiProvider(pId: string) {
               </div>
             </div>
 
-            <!-- Contact person card -->
-            <div v-if="selectedLead.contactName || selectedLead.contactTitle" class="bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-xl p-4 rounded-xl border border-white/50 dark:border-white/5 shadow-md shadow-black/5 flex items-center gap-3">
-              <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0 relative shadow-inner">
-                {{ selectedLead.contactName ? selectedLead.contactName.substring(0, 2).toUpperCase() : 'EX' }}
-                <div v-if="selectedLead.linkedinUrl" class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-black/5">
-                  <svg class="w-3.5 h-3.5 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <!-- Contact Intelligence Section -->
+            <div v-if="(selectedLead.employees && selectedLead.employees.length > 0) || selectedLead.contactName || selectedLead.contactTitle" class="space-y-4">
+              <!-- Primary Director Card -->
+              <div v-if="selectedLead.employees && selectedLead.employees.length > 0">
+                <h4 class="text-[10px] font-black text-indigo-900/40 dark:text-indigo-300/40 uppercase tracking-[0.2em] px-1 mb-2">Primary Director</h4>
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-[1px] rounded-2xl shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all">
+                  <div class="bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-xl p-5 rounded-[15px] flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-500/20 dark:to-purple-500/20 rounded-2xl flex items-center justify-center font-black text-xl text-indigo-600 dark:text-indigo-300 flex-shrink-0 relative border border-indigo-500/10 shadow-inner">
+                      {{ selectedLead.employees[0].name.substring(0, 2).toUpperCase() }}
+                      <div v-if="sanitizeLinkedinUrl(selectedLead.employees[0].linkedinUrl)" class="absolute -bottom-1 -right-1 bg-white dark:bg-surface-container-high rounded-full p-1 shadow-md border border-black/5">
+                        <svg class="w-4 h-4 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                      </div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-2">
+                        <BadgeCheck class="w-4 h-4 text-indigo-500 flex-shrink-0 shadow-sm" />
+                        <h4 class="font-black text-base truncate text-on-surface">{{ selectedLead.employees[0].name }}</h4>
+                      </div>
+                      <p class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase mt-1 tracking-wider">{{ selectedLead.employees[0].role }}</p>
+                      <div class="flex items-center gap-3 mt-3">
+                        <a v-if="sanitizeLinkedinUrl(selectedLead.employees[0].linkedinUrl)" :href="sanitizeLinkedinUrl(selectedLead.employees[0].linkedinUrl)!" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 text-[#0A66C2] rounded-lg text-[10px] font-black transition-all">
+                          <ExternalLink class="w-3.5 h-3.5" /> LinkedIn Profile
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3 More Persons Section -->
+                <div v-if="selectedLead.employees.length > 1" class="mt-6">
+                  <h4 class="text-[10px] font-black text-indigo-900/40 dark:text-indigo-300/40 uppercase tracking-[0.2em] px-1 mb-3">Additional Key Executives</h4>
+                  <div class="grid grid-cols-1 gap-2">
+                    <div v-for="emp in selectedLead.employees.slice(1, 4)" :key="emp.name" class="bg-white/40 dark:bg-surface-container-lowest/40 backdrop-blur-md p-3 rounded-xl border border-white/40 dark:border-white/5 flex items-center justify-between group hover:bg-white/60 dark:hover:bg-surface-container-lowest/60 transition-all">
+                       <div class="flex items-center gap-3 min-w-0">
+                         <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-[10px] font-black text-indigo-500 flex-shrink-0">
+                           {{ emp.name.substring(0, 2).toUpperCase() }}
+                         </div>
+                         <div class="min-w-0">
+                           <p class="text-[11px] font-black text-on-surface truncate">{{ emp.name }}</p>
+                           <p class="text-[9px] font-bold text-outline uppercase truncate">{{ emp.role }}</p>
+                         </div>
+                       </div>
+                       <a v-if="sanitizeLinkedinUrl(emp.linkedinUrl)" :href="sanitizeLinkedinUrl(emp.linkedinUrl)!" target="_blank" class="p-2 text-[#0A66C2] hover:bg-[#0A66C2]/10 rounded-lg transition-all" title="View LinkedIn">
+                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                       </a>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <BadgeCheck class="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                  <h4 class="font-black text-sm truncate text-on-surface">{{ selectedLead.contactName || 'Executive Profile' }}</h4>
+
+              <!-- Fallback for legacy single contact -->
+              <div v-else-if="selectedLead.contactName || selectedLead.contactTitle">
+                <h4 class="text-[10px] font-black text-indigo-900/40 dark:text-indigo-300/40 uppercase tracking-[0.2em] px-1 mb-2">Primary Director</h4>
+                <div class="bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-xl p-4 rounded-xl border border-white/50 dark:border-white/5 shadow-md shadow-black/5 flex items-center gap-3">
+                  <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0 relative shadow-inner">
+                    {{ selectedLead.contactName ? selectedLead.contactName.substring(0, 2).toUpperCase() : 'EX' }}
+                    <div v-if="sanitizeLinkedinUrl(selectedLead.linkedinUrl)" class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-black/5">
+                      <svg class="w-3.5 h-3.5 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    </div>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                      <BadgeCheck class="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                      <h4 class="font-black text-sm truncate text-on-surface">{{ selectedLead.contactName || 'Executive Profile' }}</h4>
+                    </div>
+                    <p class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase mt-0.5 truncate">{{ selectedLead.contactTitle || 'Key Decision Maker' }}</p>
+                    <a v-if="sanitizeLinkedinUrl(selectedLead.linkedinUrl)" :href="sanitizeLinkedinUrl(selectedLead.linkedinUrl)!" target="_blank" class="inline-flex items-center gap-1 mt-1.5 text-[10px] font-black text-[#0A66C2] hover:underline">
+                      <ExternalLink class="w-3 h-3" /> LinkedIn Profile
+                    </a>
+                  </div>
                 </div>
-                <p class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase mt-0.5 truncate">{{ selectedLead.contactTitle || 'Key Decision Maker' }}</p>
-                <a v-if="selectedLead.linkedinUrl" :href="selectedLead.linkedinUrl.startsWith('http') ? selectedLead.linkedinUrl : 'https://linkedin.com/' + selectedLead.linkedinUrl" target="_blank" class="inline-flex items-center gap-1 mt-1.5 text-[10px] font-black text-[#0A66C2] hover:underline">
-                  <ExternalLink class="w-3 h-3" /> LinkedIn Profile
-                </a>
               </div>
             </div>
 
@@ -960,22 +1037,46 @@ function selectAiProvider(pId: string) {
             </div>
 
             <!-- Results (if already enriched) -->
-            <div v-if="selectedLead.email || selectedLead.contactName" class="space-y-2">
+            <div v-if="selectedLead.email || (selectedLead.employees && selectedLead.employees.length > 0) || selectedLead.contactName" class="space-y-3">
               <h5 class="text-[10px] font-black uppercase text-outline tracking-widest mb-2">Enriched Data</h5>
+              
+              <!-- Company/Verified Email -->
               <div v-if="selectedLead.email" class="flex items-center gap-3 bg-green-50 dark:bg-green-500/10 p-3 rounded-xl border border-green-200/50 dark:border-green-500/20">
                 <Mail class="w-4 h-4 text-green-600 flex-shrink-0" />
-                <div>
-                  <p class="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase">Verified Email</p>
-                  <a :href="`mailto:${selectedLead.email}`" class="text-sm font-black text-on-surface hover:text-green-600 transition-colors">{{ selectedLead.email }}</a>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[9px] font-black text-green-700 dark:text-green-400 uppercase tracking-tighter">Verified Business Email</p>
+                  <a :href="`mailto:${selectedLead.email}`" class="text-xs font-black text-on-surface hover:text-green-600 transition-colors truncate block">{{ selectedLead.email }}</a>
                 </div>
               </div>
-              <div v-if="selectedLead.contactName" class="flex items-center gap-3 bg-indigo-50 dark:bg-indigo-500/10 p-3 rounded-xl border border-indigo-200/50 dark:border-indigo-500/20">
-                <BadgeCheck class="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                <div>
-                  <p class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase">Contact</p>
-                  <p class="text-sm font-black text-on-surface">{{ selectedLead.contactName }}</p>
-                  <p v-if="selectedLead.contactTitle" class="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase">{{ selectedLead.contactTitle }}</p>
+
+              <!-- Personnel List -->
+              <div v-if="selectedLead.employees && selectedLead.employees.length > 0" v-for="(emp, idx) in selectedLead.employees.slice(0, 4)" :key="idx" class="flex items-center gap-3 bg-indigo-50 dark:bg-indigo-500/10 p-3 rounded-xl border border-indigo-200/50 dark:border-indigo-500/20 group hover:shadow-md transition-all">
+                <div class="w-8 h-8 rounded-lg bg-white dark:bg-surface-container flex items-center justify-center font-black text-[10px] text-indigo-600 shadow-sm">
+                  {{ emp.name.substring(0, 2).toUpperCase() }}
                 </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <p class="text-xs font-black text-on-surface truncate">{{ emp.name }}</p>
+                    <BadgeCheck class="w-3 h-3 text-indigo-500" />
+                  </div>
+                  <p class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase truncate">{{ emp.role }}</p>
+                </div>
+                <a v-if="sanitizeLinkedinUrl(emp.linkedinUrl)" :href="sanitizeLinkedinUrl(emp.linkedinUrl)!" target="_blank" class="p-2 text-[#0A66C2] hover:bg-[#0A66C2]/10 rounded-lg transition-all" title="LinkedIn">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+              </div>
+
+              <!-- Fallback for generic contact (no employees list) -->
+              <div v-else-if="selectedLead.contactName" class="flex items-center gap-3 bg-indigo-50 dark:bg-indigo-500/10 p-3 rounded-xl border border-indigo-200/50 dark:border-indigo-500/20">
+                <BadgeCheck class="w-4 h-4 text-indigo-600 flex-shrink-0" />
+                <div class="min-w-0 flex-1">
+                  <p class="text-[9px] font-black text-indigo-700 dark:text-indigo-400 uppercase tracking-tighter">Primary Contact</p>
+                  <p class="text-xs font-black text-on-surface truncate">{{ selectedLead.contactName }}</p>
+                  <p v-if="selectedLead.contactTitle" class="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold uppercase truncate">{{ selectedLead.contactTitle }}</p>
+                </div>
+                <a v-if="sanitizeLinkedinUrl(selectedLead.linkedinUrl)" :href="sanitizeLinkedinUrl(selectedLead.linkedinUrl)!" target="_blank" class="p-2 text-[#0A66C2] hover:bg-white/50 rounded-lg transition-all">
+                  <ExternalLink class="w-3.5 h-3.5" />
+                </a>
               </div>
             </div>
 
@@ -1059,10 +1160,7 @@ function selectAiProvider(pId: string) {
       </aside>
     </transition>
 
-    <!-- Floating Action Button (Global Context) -->
-    <button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-50">
-      <Sparkles class="w-6 h-6 fill-white" />
-    </button>
+
     
     <!-- Toast -->
     <div

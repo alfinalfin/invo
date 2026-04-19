@@ -9,7 +9,7 @@ import { enrichLeadsWithApollo } from "../services/apolloService.js";
 import { dedupeLeads } from "../services/dedupeService.js";
 import { enrichLeadEmails } from "../services/emailService.js";
 import { enrichLeads, discoverLeadContactInfo } from "../services/enrichmentService.js";
-import { saveUserLeads, wipeUserLeads } from "../services/firebaseService.js";
+import { saveUserLeads, wipeUserLeads, updateUserLead } from "../services/firebaseService.js";
 import * as importService from "../services/importService.js";
 
 const aiProviderSchema = z.preprocess(
@@ -273,6 +273,25 @@ export async function generateEmail(req, res, next) {
     
     const enriched = await generateLeadEnrichment(lead, defaultEnrichment, requestedSelection);
     
+    // Persist the generated email/score back to the database if possible
+    const userId = getUserId(req, {});
+    if (userId && lead.id) {
+       try {
+         await updateUserLead({
+           userId,
+           leadId: lead.id,
+           collectionName: req.body.collectionName || "ai_leads", // Default to ai_leads for AI features
+           updates: {
+             draft_email: enriched.draft_email,
+             ai_summary: enriched.ai_summary,
+             lead_score: enriched.lead_score
+           }
+         });
+       } catch (err) {
+         logger.warn("Failed to persist generated email back to DB", { leadId: lead.id, message: err.message });
+       }
+    }
+    
     res.status(200).json({
       status: "success",
       email: enriched.draft_email,
@@ -379,11 +398,12 @@ export async function enrichSingleLeadAi(req, res, next) {
     
     // Custom prompt to "Search/Infer" email and employee details
     const prompt = [
-      "You are an expert corporate researcher. For the business below, identify a likely key decision-maker (CEO, Director, Owner).",
-      "If you do not know a specific real person from your training data, create a highly realistic and probable Executive Persona based on common UK/global business naming patterns.",
-      "Infer their likely professional email format (e.g., firstname.lastname@domain.com or info@domain.com).",
-      "Generate a realistic LinkedIn profile URL suffix for them.",
-      "Return ONLY a valid JSON object with EXACTLY these keys: email (string), employeeName (string), employeeRole (string), linkedinUrl (string), confidence (integer 0-100).",
+      "You are an expert corporate researcher. For the business below, you MUST identify exactly 4 decision-makers.",
+      "PRIORITIZE these roles: Operations Manager, Logistics Manager, Transport Manager, Fleet Manager, CEO, or Founder.",
+      "MANDATORY: If you do not know a specific real person from your training data, you MUST create a highly realistic Executive Persona for the role to fill all 4 slots.",
+      "DO NOT provide a LinkedIn URL for generated personas. ONLY provide a LinkedIn URL if you have high confidence it is a real profile.",
+      "Return ONLY a valid JSON object with EXACTLY this structure: { employees: Array<{ name: string, role: string, email: string, linkedinUrl: string|null }>, confidence: integer }.",
+      "The 'employees' array MUST contain exactly 4 objects.",
       `Business: ${JSON.stringify({
         company: lead.company,
         website: lead.website || (lead.company.toLowerCase().replace(/\s/g, '') + '.com'),
@@ -391,25 +411,52 @@ export async function enrichSingleLeadAi(req, res, next) {
       })}`
     ].join("\n");
 
-    let aiSearch = {};
+    let aiSearch = { employees: [] };
     let aiError = null;
     try {
       aiSearch = await requestStructuredJson(prompt, "AI Employee Intelligence Inference", selection);
+      // Ensure it's an array
+      if (!Array.isArray(aiSearch.employees)) aiSearch.employees = [];
     } catch (err) {
       aiError = err.message;
-      logger.warn("Deep AI Employee Inference failed, returning partially scraped data instead.", {
+      logger.warn("Deep AI Employee Inference failed.", {
         company: lead.company,
         message: aiError
       });
     }
 
+    const firstEmployee = aiSearch.employees[0] || {};
     const finalResult = {
       ...leadWithEmail,
-      email: leadWithEmail.email || aiSearch.email || null,
-      contactName: lead.contactName || aiSearch.employeeName || null,
-      contactTitle: lead.contactTitle || aiSearch.employeeRole || null,
-      linkedinUrl: lead.linkedinUrl || aiSearch.linkedinUrl || null
+      email: leadWithEmail.email || firstEmployee.email || null,
+      contactName: lead.contactName || firstEmployee.name || null,
+      contactTitle: lead.contactTitle || firstEmployee.role || null,
+      linkedinUrl: lead.linkedinUrl || firstEmployee.linkedinUrl || null,
+      employees: aiSearch.employees
     };
+
+    // ── Persistence ──────────────────────────────────────────
+    const userId = getUserId(req, {});
+    if (userId && lead.id) {
+      try {
+        await updateUserLead({
+          userId,
+          leadId: lead.id,
+          collectionName: req.body.collectionName || "ai_leads",
+          updates: {
+            email: finalResult.email,
+            contactName: finalResult.contactName,
+            contactTitle: finalResult.contactTitle,
+            linkedinUrl: finalResult.linkedinUrl,
+            website: finalResult.website,
+            employees: finalResult.employees
+          }
+        });
+        logger.info("Enriched lead persisted with multiple employees.", { leadId: lead.id, userId });
+      } catch (err) {
+        logger.warn("Enrichment worked but persistence failed.", { leadId: lead.id, message: err.message });
+      }
+    }
 
     res.status(200).json({
       status: "success",
