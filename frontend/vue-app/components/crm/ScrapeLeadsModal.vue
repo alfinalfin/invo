@@ -119,6 +119,7 @@ onMounted(() => {
 const maxLeads = ref(50);
 const sourceMaps = ref(true);
 const sourceDirectories = ref(false);
+const sourceLinkedIn = ref(false);
 const enableAIFiltering = ref(true);
 const skipExisting = ref(false);
 
@@ -178,7 +179,7 @@ async function startScraping() {
       sources: {
         google: sourceMaps.value,
         directories: sourceDirectories.value,
-        linkedin: false
+        linkedin: sourceLinkedIn.value
       },
       ai: {
         provider: aiProvider.value || "groq",
@@ -419,15 +420,12 @@ function viewLeads() {
                 Configure intent signals and extraction targets.
               </p>
             </div>
-            <div class="flex items-center gap-2">
-
-              <button
-                @click="closeModal"
-                class="rounded-full p-2 text-outline hover:bg-surface-variant hover:text-on-surface transition-colors"
-              >
-                <X class="h-5 w-5" stroke-width="2.5" />
-              </button>
-            </div>
+            <button
+              @click="closeModal"
+              class="rounded-full p-2 text-outline hover:bg-surface-variant hover:text-on-surface transition-colors"
+            >
+              <X class="h-5 w-5" stroke-width="2.5" />
+            </button>
           </div>
         </div>
 
@@ -534,21 +532,19 @@ function viewLeads() {
                   </label>
                 </label>
 
-                <!-- UK Company Directories -->
+                <!-- LinkedIn -->
                 <label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-variant/50 cursor-pointer transition-colors border-t border-outline-variant/10">
                   <div class="flex items-center gap-3">
-                    <div class="text-emerald-600 bg-emerald-500/10 p-2 rounded-lg">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M9 21V9l6-6 6 6v12M9 21h6M12 9v4m0 0v4m0-4h4m-4 0H8"/></svg>
-                    </div>
+                    <div class="text-[#0a66c2] bg-[#0a66c2]/10 p-2 rounded-lg"><Linkedin class="w-4 h-4" /></div>
                     <div>
-                      <div class="text-[13px] font-extrabold text-on-surface">UK Company Directories</div>
-                      <div class="text-[11px] font-medium text-outline">Companies House · registered businesses</div>
+                      <div class="text-[13px] font-extrabold text-on-surface">LinkedIn Cross-Ref</div>
+                      <div class="text-[11px] font-medium text-outline">Append executive identities</div>
                     </div>
                   </div>
                   <label class="relative inline-flex cursor-pointer items-center pr-1">
-                    <div class="h-5 w-9 rounded-full transition-colors duration-300" :class="sourceDirectories ? 'bg-emerald-600' : 'bg-outline-variant/40'"></div>
-                    <div class="absolute left-[2px] top-[2px] h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-300" :class="sourceDirectories ? 'translate-x-4' : ''"></div>
-                    <input type="checkbox" v-model="sourceDirectories" class="hidden" />
+                    <div class="h-5 w-9 rounded-full transition-colors duration-300" :class="sourceLinkedIn ? 'bg-[#0a66c2]' : 'bg-outline-variant/40'"></div>
+                    <div class="absolute left-[2px] top-[2px] h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-300" :class="sourceLinkedIn ? 'translate-x-4' : ''"></div>
+                    <input type="checkbox" v-model="sourceLinkedIn" class="hidden" />
                   </label>
                 </label>
 

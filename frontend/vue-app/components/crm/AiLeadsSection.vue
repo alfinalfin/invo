@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { Bot, Mail, Phone, Filter, Search, Sparkles, MapPin, BadgeCheck, X, Info, Globe, Trash2 as TrashIcon } from "lucide-vue-next";
+import { Bot, Mail, Phone, Sparkles, BadgeCheck, X, Globe, Trash2 as TrashIcon, RefreshCcw, Database, ExternalLink } from "lucide-vue-next";
 import type { LeadRecord } from "~/lib/crm";
+
+const config = useRuntimeConfig();
+const API_BASE = (config.public.apiBase as string)?.replace(/\/$/, '') || 'https://invo-bgjy.onrender.com';
 
 const props = defineProps<{
   leads?: LeadRecord[];
@@ -14,8 +16,6 @@ const emit = defineEmits<{
   (e: 'import'): void;
 }>();
 
-const route = useRoute();
-const router = useRouter();
 
 interface TimelineEvent {
   title: string;
@@ -39,6 +39,8 @@ interface Lead {
   email: string;
   phone: string;
   contactName?: string;
+  contactTitle?: string;
+  linkedinUrl?: string;
   reasoning?: string[];
   timeline?: TimelineEvent[];
   draftEmailPreview?: string;
@@ -75,6 +77,8 @@ const localReasoning = ref<Record<string, string>>({});
 const localScores = ref<Record<string, number>>({});
 const localEmails = ref<Record<string, string>>({});
 const localContactNames = ref<Record<string, string>>({});
+const localContactTitles = ref<Record<string, string>>({});
+const localLinkedinUrls = ref<Record<string, string>>({});
 
 const isEnriching = ref<string | null>(null);
 
@@ -100,6 +104,8 @@ const aiLeads = computed<Lead[]>(() => {
       email: localEmails.value[l.id] || l.email || "",
       phone: l.phone || "",
       contactName: localContactNames.value[l.id] || (l as any).contactName || "",
+      contactTitle: localContactTitles.value[l.id] || (l as any).contactTitle || "",
+      linkedinUrl: localLinkedinUrls.value[l.id] || (l as any).linkedinUrl || "",
       reasoning: localReasoning.value[l.id] ? localReasoning.value[l.id].split(/[\n.]/).map(s=>s.trim()).filter(r => r.length > 5) : ((l.ai_summary || l.customerNotes) ? (l.ai_summary || l.customerNotes)!.split(/[\n.]/).map(s=>s.trim()).filter(r => r.length > 5) : [
         `${l.company || 'This company'} is a prospective lead located near ${l.pickupAddress || 'their target market'}.`,
         `Identified via ${l.source || 'automated extraction'} and marked for outbound review.`,
@@ -117,6 +123,15 @@ const aiLeads = computed<Lead[]>(() => {
 const activeFilter = ref<"All" | "Hot Leads" | "Follow-up">("All");
 const sourceFilter = ref<"All" | "google_maps" | "google_ads" | "companies_house" | "yelp" | "crm">("All");
 const selectedLeadId = ref<string | null>(null);
+const panelTab = ref<'overview' | 'enrich' | 'outreach' | 'timeline'>('overview');
+
+const TABS = [
+  { id: 'overview' as const, label: 'Overview',  icon: '🏢' },
+  { id: 'enrich'   as const, label: 'AI Enrich', icon: '🔍' },
+  { id: 'outreach' as const, label: 'Outreach',  icon: '📧' },
+  { id: 'timeline' as const, label: 'Timeline',  icon: '🕐' },
+];
+
 
 const sourceCounts = computed(() => {
   const counts = {
@@ -323,11 +338,7 @@ async function generateOutreach(id: string, event: Event) {
   }
   
   try {
-    const apiEndpoint = process.env.NODE_ENV === "development" 
-      ? "http://localhost:5000/api/generate-email" 
-      : "https://invo-bgjy.onrender.com/api/generate-email";
-      
-    const res = await fetch(apiEndpoint, {
+    const res = await fetch(`${API_BASE}/api/generate-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -343,19 +354,27 @@ async function generateOutreach(id: string, event: Event) {
     
     if (res.ok) {
       const data = await res.json();
+      let hasError = false;
       if (data) {
          if (data.email) localEmailDrafts.value[id] = data.email;
          if (data.reasoning) localReasoning.value[id] = data.reasoning;
          if (data.score) localScores.value[id] = data.score;
+         
+         if (data.aiError) {
+           toastMessage.value = `API Error: ${data.aiError}`;
+           hasError = true;
+         } else {
+           toastMessage.value = "AI Intelligence Generated! ✨";
+         }
       }
-      toastMessage.value = "AI Intelligence Generated! ✨";
+      isGenerating.value = null;
+      setTimeout(() => toastMessage.value = "", hasError ? 6000 : 3000);
     } else {
       throw new Error(await res.text());
     }
   } catch(e) {
     console.error("Failed to generate outreach email", e);
     toastMessage.value = "Failed to generate email ❌";
-  } finally {
     isGenerating.value = null;
     setTimeout(() => toastMessage.value = "", 3000);
   }
@@ -370,11 +389,7 @@ async function enrichWithAi(id: string) {
   }
 
   try {
-    const apiEndpoint = process.env.NODE_ENV === "development" 
-      ? "http://localhost:5000/api/enrich-single-lead-ai" 
-      : "https://invo-bgjy.onrender.com/api/enrich-single-lead-ai";
-
-    const res = await fetch(apiEndpoint, {
+    const res = await fetch(`${API_BASE}/api/enrich-single-lead-ai`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -391,47 +406,74 @@ async function enrichWithAi(id: string) {
 
     if (res.ok) {
       const data = await res.json();
+      let hasError = false;
       if (data && data.lead) {
         if (data.lead.email) localEmails.value[id] = data.lead.email;
         if (data.lead.contactName) localContactNames.value[id] = data.lead.contactName;
-        toastMessage.value = "Lead Enriched! ✨";
+        if (data.lead.contactTitle) localContactTitles.value[id] = data.lead.contactTitle;
+        if (data.lead.linkedinUrl) localLinkedinUrls.value[id] = data.lead.linkedinUrl;
+
+        const foundEmail = data.lead.email;
+        const foundContact = data.lead.contactName;
+
+        if (data.aiError) {
+          toastMessage.value = `AI Warning: ${data.aiError}`;
+          hasError = true;
+        } else if (!foundEmail && !foundContact) {
+          toastMessage.value = 'No email found — try a different model ⚠️';
+          hasError = true;
+        } else if (!foundEmail) {
+          toastMessage.value = `Contact found: ${foundContact} — but no email ⚠️`;
+        } else {
+          toastMessage.value = 'Lead Enriched! ✨';
+        }
+      } else if (data.aiError) {
+        toastMessage.value = `Enrichment Error: ${data.aiError}`;
+        hasError = true;
+      } else {
+        toastMessage.value = 'No data returned from server ❌';
+        hasError = true;
       }
+      isEnriching.value = null;
+      setTimeout(() => toastMessage.value = "", hasError ? 7000 : 3500);
     } else {
-      throw new Error(await res.text());
+      const errText = await res.text();
+      throw new Error(`Server ${res.status}: ${errText}`);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error("Enrichment failed", e);
-    toastMessage.value = "Enrichment failed ❌";
-  } finally {
+    toastMessage.value = `Enrichment failed: ${e?.message || 'Unknown error'} ❌`;
     isEnriching.value = null;
-    setTimeout(() => toastMessage.value = "", 3000);
+    setTimeout(() => toastMessage.value = "", 6000);
   }
 }
 
 function selectLead(id: string) {
   selectedLeadId.value = id;
+  panelTab.value = 'overview';
 }
 
 // ---- AI Model Configuration ----
 const { aiProvider, aiModel } = useAiConfig();
 
 const aiProviders = [
-  { id: "groq", name: "Groq", icon: "⚡" },
   { id: "openrouter", name: "OpenRouter", icon: "🌐" },
-  { id: "gemini", name: "Gemini", icon: "✨" },
+  { id: "groq", name: "Groq", icon: "⚡" },
 ];
 
 const aiModels = {
   groq: [
     { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B", speed: "Very Fast", intelligence: "High", costTier: "Balanced", recommended: true },
     { id: "llama-3.1-8b-instant", name: "Llama 3.1 8B", speed: "Maximum", intelligence: "Standard", costTier: "Cheap" },
-    { id: "mixtral-8x7b-32768", name: "Mixtral 8x7B", speed: "Maximum", intelligence: "Standard", costTier: "Cheap" },
-    { id: "gemma2-9b-it", name: "Gemma 2 9B", speed: "Very Fast", intelligence: "Standard", costTier: "Cheap" },
-    { id: "qwen-2.5-32b", name: "Qwen 2.5 32B", speed: "Fast", intelligence: "High", costTier: "Balanced" },
-    { id: "deepseek-r1-distill-llama-70b", name: "DeepSeek R1 (70B Distill)", speed: "Fast", intelligence: "Very High", costTier: "Premium" },
+    { id: "meta-llama/llama-4-scout-17b-16e-instruct", name: "Llama 4 Scout 17B", speed: "Fast", intelligence: "High", costTier: "Balanced" },
+    { id: "qwen/qwen3-32b", name: "Qwen 3 32B", speed: "Fast", intelligence: "High", costTier: "Balanced" },
   ],
   openrouter: [
-    { id: "anthropic/claude-3.5-sonnet", name: "Claude 3.5 Sonnet", speed: "Fast", intelligence: "Maximum", costTier: "Premium", recommended: true },
+    { id: "google/gemma-3-27b-it:free", name: "Gemma 3 27B (Free)", speed: "Very Fast", intelligence: "High", costTier: "Free", recommended: true },
+    { id: "meta-llama/llama-3.3-70b-instruct:free", name: "Llama 3.3 70B (Free)", speed: "Very Fast", intelligence: "High", costTier: "Free" },
+    { id: "nousresearch/hermes-3-llama-3.1-405b:free", name: "Hermes 3 405B (Free)", speed: "Standard", intelligence: "Maximum", costTier: "Free" },
+    { id: "meta-llama/llama-3.2-3b-instruct:free", name: "Llama 3.2 3B (Free)", speed: "Maximum", intelligence: "Standard", costTier: "Free" },
+    { id: "anthropic/claude-3.5-sonnet", name: "Claude 3.5 Sonnet", speed: "Fast", intelligence: "Maximum", costTier: "Premium" },
     { id: "anthropic/claude-3.5-haiku", name: "Claude 3.5 Haiku", speed: "Very Fast", intelligence: "High", costTier: "Cheap" },
     { id: "anthropic/claude-3-opus", name: "Claude 3 Opus", speed: "Standard", intelligence: "Maximum", costTier: "Premium" },
     { id: "openai/gpt-4o", name: "GPT-4o", speed: "Fast", intelligence: "Maximum", costTier: "Premium" },
@@ -443,14 +485,7 @@ const aiModels = {
     { id: "meta-llama/llama-3.1-405b-instruct", name: "Llama 3.1 405B", speed: "Standard", intelligence: "Maximum", costTier: "Premium" },
     { id: "deepseek/deepseek-chat", name: "DeepSeek V3", speed: "Fast", intelligence: "Very High", costTier: "Cheap" },
     { id: "deepseek/deepseek-r1", name: "DeepSeek R1", speed: "Standard", intelligence: "Maximum", costTier: "Premium" },
-    { id: "x-ai/grok-2-1212", name: "Grok 2", speed: "Fast", intelligence: "Very High", costTier: "Premium" }
-  ],
-  gemini: [
-    { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", speed: "Very Fast", intelligence: "High", costTier: "Cheap", recommended: true },
-    { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", speed: "Fast", intelligence: "Maximum", costTier: "Premium" },
-    { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash", speed: "Very Fast", intelligence: "High", costTier: "Cheap" },
-    { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro", speed: "Standard", intelligence: "Very High", costTier: "Premium" },
-  ],
+  ]
 };
 
 function selectAiProvider(pId: string) {
@@ -504,39 +539,7 @@ function selectAiProvider(pId: string) {
       </div>
     </div>
 
-    <!-- AI Configuration Horizontal Bar -->
-    <div class="bg-surface-container-lowest dark:bg-surface-container rounded-xl shadow-sm p-6 mb-10 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between border border-outline-variant/20">
-       <div class="flex-1">
-         <div class="flex items-center gap-2 mb-2">
-           <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div> 
-           <h3 class="text-[13px] font-black tracking-wide text-on-surface uppercase">Active Intelligence Core</h3>
-         </div>
-         <p class="text-[12px] font-medium text-outline">Select the language model assigned for evaluating intent and composing proactive outreach templates.</p>
-       </div>
-       <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-          <!-- Tabs -->
-          <div class="flex p-1 bg-surface-container-low rounded-xl border border-outline-variant/30 flex-shrink-0">
-            <button
-              v-for="p in aiProviders" :key="p.id" @click="selectAiProvider(p.id)"
-              class="px-4 py-2 text-[12px] font-extrabold rounded-lg flex items-center gap-2 transition-all"
-              :class="aiProvider === p.id ? 'bg-white dark:bg-[#1e293b] shadow-sm text-on-surface' : 'text-outline hover:text-on-surface'"
-            >
-              <span>{{ p.icon }}</span> {{ p.name }}
-            </button>
-          </div>
-          <!-- Model Select Dropdown -->
-          <div class="relative w-full sm:w-[260px] flex-shrink-0">
-            <select v-model="aiModel" class="w-full appearance-none rounded-xl border border-outline-variant/40 bg-surface hover:border-purple-400 py-3 px-4 pr-10 text-[13px] font-black text-on-surface outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-colors cursor-pointer shadow-sm">
-              <option v-for="m in (aiModels as any)[aiProvider]" :key="m.id" :value="m.id">
-                 {{ m.name }} ({{ m.speed }})
-              </option>
-            </select>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-               <svg class="w-4 h-4 text-outline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-          </div>
-       </div>
-    </div>
+
 
     <!-- Stats Row -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
@@ -793,138 +796,265 @@ function selectAiProvider(pId: string) {
       leave-from-class="translate-x-0"
       leave-to-class="translate-x-full"
     >
-      <aside v-if="selectedLead" class="fixed right-0 top-16 w-full sm:w-[400px] bg-surface-container-low dark:bg-surface-container border-l border-outline-variant/10 p-6 overflow-y-auto h-[calc(100vh-64px)] z-40 shadow-2xl">
-        <div class="flex items-center justify-between mb-8">
+      <aside v-if="selectedLead" class="fixed right-0 top-16 w-full sm:w-[440px] bg-white/60 dark:bg-[#0b0e14]/60 backdrop-blur-3xl border-l border-white/40 dark:border-white/5 flex flex-col h-[calc(100vh-64px)] z-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.3)]">
+        
+        <!-- ── Panel Header ──────────────────────────── -->
+        <div class="flex items-center justify-between px-5 pt-5 pb-4 flex-shrink-0">
           <div class="flex items-center gap-3">
-            <Info class="w-5 h-5 text-outline" />
-            <h3 class="font-black text-lg tracking-tight uppercase">Lead Intelligence</h3>
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+               <Sparkles class="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h3 class="font-black text-base tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 leading-none">Lead Intelligence</h3>
+              <p class="text-[10px] font-bold text-outline mt-0.5 truncate max-w-[220px]">{{ selectedLead.company }}</p>
+            </div>
           </div>
-          <button @click="selectedLeadId = null" class="p-1.5 hover:bg-surface-container-high rounded-full transition-colors"><X class="w-5 h-5 text-on-surface-variant" /></button>
+          <button @click="selectedLeadId = null" class="p-2 bg-white/50 dark:bg-black/20 hover:bg-white dark:hover:bg-white/10 rounded-full transition-all border border-black/5 dark:border-white/10 shadow-sm"><X class="w-4 h-4 text-on-surface" /></button>
         </div>
 
-        <!-- Profile Overview -->
-        <div class="bg-white dark:bg-surface-container-lowest p-5 rounded-2xl shadow-sm mb-6">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center font-black text-2xl text-primary flex-shrink-0">
-              {{ selectedLead.initials }}
-            </div>
-            <div class="min-w-0">
-              <h4 class="text-xl font-black truncate">{{ selectedLead.company }}</h4>
-              <p v-if="selectedLead.contactName" class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
-                 <BadgeCheck class="w-3 h-3" /> {{ selectedLead.contactName }}
-              </p>
-              <p v-if="selectedLead.website" class="text-sm text-outline font-medium flex items-center gap-1 mt-1 truncate">
-                <Globe class="w-3.5 h-3.5 flex-shrink-0" />
-                {{ selectedLead.website }}
-              </p>
-              <div class="flex flex-col gap-1 mt-2">
-                <div v-if="selectedLead.email" class="flex items-center gap-2 min-w-0">
-                  <p class="text-sm text-on-surface-variant font-medium flex items-center gap-2 truncate flex-1">
-                    <Mail class="w-3.5 h-3.5 flex-shrink-0 text-primary" />
-                    <a :href="`mailto:${selectedLead.email}`" class="hover:underline hover:text-primary transition-colors">{{ selectedLead.email }}</a>
-                  </p>
-                </div>
-                <div v-else class="flex flex-col gap-2 mt-1">
-                   <div class="flex items-center gap-2 text-outline italic text-xs">
-                      <Mail class="w-3 h-3" /> Email missing
-                   </div>
-                   <button 
-                     @click="enrichWithAi(selectedLead.id)"
-                     :disabled="isEnriching === selectedLead.id"
-                     class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-primary/5 text-primary text-[11px] font-black uppercase tracking-wider hover:bg-primary/10 transition-all border border-primary/20"
-                   >
-                     <Sparkles v-if="isEnriching !== selectedLead.id" class="w-3 h-3" />
-                     <RefreshCcw v-else class="w-3 h-3 animate-spin" />
-                     {{ isEnriching === selectedLead.id ? 'Deep Searching...' : 'Search Email using AI' }}
-                   </button>
-                </div>
+        <!-- ── Tab Bar ──────────────────────────────── -->
+        <div class="flex gap-1 px-4 pb-3 flex-shrink-0">
+          <button
+            v-for="tab in TABS"
+            :key="tab.id"
+            @click="panelTab = tab.id"
+            class="flex-1 flex flex-col items-center gap-0.5 py-2 px-1 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+            :class="panelTab === tab.id
+              ? 'bg-gradient-to-b from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/30'
+              : 'text-outline hover:text-on-surface hover:bg-white/40 dark:hover:bg-white/5'"
+          >
+            <span class="text-base leading-none">{{ tab.icon }}</span>
+            {{ tab.label }}
+          </button>
+        </div>
+        <div class="h-px bg-black/5 dark:bg-white/5 mx-4 flex-shrink-0"></div>
 
-                <p v-if="selectedLead.phone" class="text-sm text-on-surface-variant font-medium flex items-center gap-2 truncate">
-                  <Phone class="w-3.5 h-3.5 flex-shrink-0 text-primary" />
-                  <a :href="`tel:${selectedLead.phone}`" class="hover:underline hover:text-primary transition-colors">{{ selectedLead.phone }}</a>
-                </p>
+        <!-- ── Tab Content (scrollable) ─────────────── -->
+        <div class="flex-1 overflow-y-auto px-5 pt-4 pb-6">
+
+          <!-- ═══ OVERVIEW TAB ══════════════════════ -->
+          <template v-if="panelTab === 'overview'">
+            <!-- Company Card -->
+            <div class="bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-xl p-5 rounded-2xl shadow-xl shadow-black/5 border border-white/50 dark:border-white/5 mb-4 relative overflow-hidden group">
+              <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none"></div>
+              <div class="flex items-start gap-4 mb-4 relative z-10">
+                <div class="w-14 h-14 bg-gradient-to-tr from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-2xl flex items-center justify-center font-black text-xl text-indigo-700 dark:text-indigo-300 flex-shrink-0 border border-indigo-200/50 dark:border-indigo-700/50 shadow-inner group-hover:scale-105 transition-transform duration-500">
+                  {{ selectedLead.initials }}
+                </div>
+                <div class="min-w-0 flex-1 pt-1">
+                  <h4 class="text-lg font-black truncate text-on-surface">{{ selectedLead.company }}</h4>
+                  <p v-if="selectedLead.website" class="text-[11px] text-outline font-medium flex items-center gap-1 mt-1 truncate hover:text-primary cursor-pointer transition-colors">
+                    <Globe class="w-3 h-3 flex-shrink-0" /> {{ selectedLead.website.replace(/^https?:\/\//, '') }}
+                  </p>
+                  <span class="inline-block text-[10px] font-black px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant uppercase tracking-wider mt-1">{{ selectedLead.type }}</span>
+                </div>
+              </div>
+
+              <!-- Contact rows -->
+              <div class="space-y-2 relative z-10 mb-4">
+                <div class="flex items-center gap-3 bg-surface-container-low/50 dark:bg-surface-container/50 p-2.5 rounded-xl border border-white/20 dark:border-white/5">
+                  <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><Mail class="w-4 h-4 text-indigo-500" /></div>
+                  <div v-if="selectedLead.email" class="min-w-0 flex-1">
+                    <p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-0.5">Email</p>
+                    <a :href="`mailto:${selectedLead.email}`" class="text-sm font-bold text-on-surface truncate hover:text-indigo-500 transition-colors block">{{ selectedLead.email }}</a>
+                  </div>
+                  <div v-else class="min-w-0 flex-1">
+                    <p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-0.5">Email</p>
+                    <button @click="panelTab = 'enrich'" class="text-[11px] font-black text-indigo-500 hover:text-indigo-700 transition-colors flex items-center gap-1">
+                      <Sparkles class="w-3 h-3" /> Find with AI →
+                    </button>
+                  </div>
+                </div>
+                <div v-if="selectedLead.phone" class="flex items-center gap-3 bg-surface-container-low/50 dark:bg-surface-container/50 p-2.5 rounded-xl border border-white/20 dark:border-white/5">
+                  <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center flex-shrink-0"><Phone class="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-0.5">Direct Line</p>
+                    <a :href="`tel:${selectedLead.phone}`" class="text-sm font-bold text-on-surface truncate hover:text-emerald-600 transition-colors block">{{ selectedLead.phone }}</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Score tiles -->
+              <div class="grid grid-cols-2 gap-3 relative z-10">
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-500/10 dark:to-emerald-500/10 p-3 rounded-xl border border-green-100 dark:border-green-500/20 text-center">
+                  <p class="text-[10px] font-black text-green-700 dark:text-green-400 uppercase tracking-widest mb-1">AI Score</p>
+                  <p class="text-2xl font-black" :class="selectedLead.aiScore >= 8 ? 'text-green-600 dark:text-green-400' : selectedLead.aiScore >= 5 ? 'text-orange-500' : 'text-error'">{{ selectedLead.aiScore }}<span class="text-xs font-bold opacity-50">/10</span></p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-500/10 dark:to-indigo-500/10 p-3 rounded-xl border border-blue-100 dark:border-blue-500/20 text-center">
+                  <p class="text-[10px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-widest mb-1">Match Rate</p>
+                  <p class="text-2xl font-black text-blue-600 dark:text-blue-400">{{ selectedLead.matchRate }}%</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-surface-container-low dark:bg-surface-container p-3 rounded-xl">
-              <p class="text-[10px] font-black text-outline uppercase mb-1">AI Score</p>
-              <p class="text-xl font-black" :class="selectedLead.aiScore >= 8 ? 'text-green-500' : selectedLead.aiScore >= 5 ? 'text-orange-500' : 'text-error'">{{ selectedLead.aiScore }} / 10</p>
-            </div>
-            <div class="bg-surface-container-low dark:bg-surface-container p-3 rounded-xl">
-              <p class="text-[10px] font-black text-outline uppercase mb-1">Match Rate</p>
-              <p class="text-xl font-black text-primary">{{ selectedLead.matchRate }}%</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- AI Reasoning -->
-        <div v-if="selectedLead.reasoning" class="mb-8">
-          <div class="flex items-center gap-2 mb-3">
-            <Bot class="w-4 h-4 text-primary" />
-            <h5 class="text-xs font-black uppercase text-outline tracking-widest">AI Analysis Reasoning</h5>
-          </div>
-          <div class="space-y-3">
-            <div v-for="(reason, i) in selectedLead.reasoning" :key="i" class="flex gap-3">
-              <div class="w-1 min-h-[40px] rounded-full" :class="i === 0 ? 'bg-green-400' : 'bg-blue-400'"></div>
-              <p class="text-sm font-medium leading-relaxed">{{ reason }}</p>
+            <!-- Contact person card -->
+            <div v-if="selectedLead.contactName || selectedLead.contactTitle" class="bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-xl p-4 rounded-xl border border-white/50 dark:border-white/5 shadow-md shadow-black/5 flex items-center gap-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0 relative shadow-inner">
+                {{ selectedLead.contactName ? selectedLead.contactName.substring(0, 2).toUpperCase() : 'EX' }}
+                <div v-if="selectedLead.linkedinUrl" class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-black/5">
+                  <svg class="w-3.5 h-3.5 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <BadgeCheck class="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                  <h4 class="font-black text-sm truncate text-on-surface">{{ selectedLead.contactName || 'Executive Profile' }}</h4>
+                </div>
+                <p class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase mt-0.5 truncate">{{ selectedLead.contactTitle || 'Key Decision Maker' }}</p>
+                <a v-if="selectedLead.linkedinUrl" :href="selectedLead.linkedinUrl.startsWith('http') ? selectedLead.linkedinUrl : 'https://linkedin.com/' + selectedLead.linkedinUrl" target="_blank" class="inline-flex items-center gap-1 mt-1.5 text-[10px] font-black text-[#0A66C2] hover:underline">
+                  <ExternalLink class="w-3 h-3" /> LinkedIn Profile
+                </a>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- AI Email Preview -->
-        <div class="mb-8">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <Sparkles class="text-primary w-4 h-4" />
-              <h5 class="text-xs font-black uppercase text-outline tracking-widest">Smart Email Suggestion</h5>
-            </div>
-            <button @click="generateOutreach(selectedLead.id, $event)" class="text-[10px] font-bold text-primary px-2 py-1 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors" :class="{'opacity-50 pointer-events-none': isGenerating === selectedLead.id}">
-              {{ isGenerating === selectedLead.id ? 'Generating...' : selectedLead.draftEmailPreview ? 'Regenerate' : 'Generate Now' }}
-            </button>
-          </div>
-          
-          <div class="bg-white dark:bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 relative">
-            <template v-if="selectedLead.draftEmailPreview">
-              <p class="text-xs text-on-surface-variant leading-relaxed mb-4 whitespace-pre-line">{{ selectedLead.draftEmailPreview }}</p>
-              <a v-if="selectedLead.email" :href="`mailto:${selectedLead.email}?subject=${encodeURIComponent(selectedLead.draftEmailPreview?.split('\n')[0]?.replace('Subject: ', '') || 'Logistics Inquiry')}&body=${encodeURIComponent(selectedLead.draftEmailPreview || '')}`" class="block w-full py-2 bg-primary text-on-primary text-xs font-bold rounded-lg shadow-md hover:bg-primary/90 transition-colors text-center">
-                Use Template & Send
-              </a>
-              <button v-else class="w-full py-2 bg-surface-container-high text-outline text-xs font-bold rounded-lg cursor-not-allowed text-center">
-                No Email Available
+            <!-- Quick actions -->
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <button @click="panelTab = 'enrich'" class="flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[11px] font-black uppercase tracking-wider shadow-md shadow-indigo-500/25 hover:-translate-y-0.5 transition-all">
+                <Sparkles class="w-3.5 h-3.5" /> AI Enrich
               </button>
-            </template>
-            <div v-else class="flex flex-col items-center justify-center py-6 text-center">
-              <Sparkles class="w-10 h-10 text-primary/30 mb-3 animate-[pulse_3s_ease-in-out_infinite]" />
-              <p class="text-xs font-black text-outline mb-1">No outreach draft found</p>
-              <p class="text-[10px] text-outline/80 mb-4 max-w-[200px]">Click below to deploy the AI agent and instantly draft a tailored message for this prospect.</p>
-              <button @click="generateOutreach(selectedLead.id, $event)" :disabled="isGenerating === selectedLead.id" class="px-5 py-2.5 bg-primary text-white text-xs font-black uppercase tracking-wider rounded-lg shadow-md hover:bg-primary/90 hover:-translate-y-0.5 transition-all">
-                {{ isGenerating === selectedLead.id ? 'Deploying...' : 'Deploy AI Agent' }}
+              <button @click="panelTab = 'outreach'" class="flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 text-white text-[11px] font-black uppercase tracking-wider shadow-md shadow-pink-500/25 hover:-translate-y-0.5 transition-all">
+                <Mail class="w-3.5 h-3.5" /> Generate Email
               </button>
             </div>
-          </div>
-        </div>
+          </template>
 
-        <!-- Timeline -->
-        <div v-if="selectedLead.timeline">
-          <h5 class="text-xs font-black uppercase text-outline tracking-widest mb-4">Journey Timeline</h5>
-          <div class="space-y-6 relative ml-2">
-            <div class="absolute left-[7px] top-2 bottom-2 w-px bg-outline-variant/30"></div>
-            
-            <div v-for="(event, i) in selectedLead.timeline" :key="i" class="relative pl-6">
-              <div 
-                class="absolute left-0 top-1 w-4 h-4 rounded-full"
-                :class="{
-                  'bg-primary ring-4 ring-primary/10': event.type === 'active',
-                  'bg-white dark:bg-surface-container border-2 border-primary': event.type === 'planned',
-                  'bg-outline-variant': event.type === 'past'
-                }"
-              ></div>
-              <p class="text-xs font-black" :class="event.type === 'active' ? 'text-on-surface' : 'text-on-surface-variant'">{{ event.title }}</p>
-              <p class="text-[10px] text-outline font-medium mt-0.5">{{ event.desc }}</p>
+          <!-- ═══ AI ENRICH TAB ══════════════════════ -->
+          <template v-else-if="panelTab === 'enrich'">
+            <!-- AI Core Module -->
+            <div class="bg-gradient-to-br from-indigo-500/5 to-purple-500/5 dark:from-indigo-500/10 dark:to-purple-500/10 rounded-2xl p-4 mb-4 border border-indigo-500/20 dark:border-indigo-400/20">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                  <h3 class="text-[11px] font-black tracking-widest text-indigo-900 dark:text-indigo-300 uppercase">AI Core Module</h3>
+                </div>
+                <div class="flex bg-white/50 dark:bg-black/20 rounded-lg p-0.5 border border-black/5 dark:border-white/5">
+                  <button v-for="p in aiProviders" :key="p.id" @click="selectAiProvider(p.id)"
+                    class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all"
+                    :class="aiProvider === p.id ? 'bg-white dark:bg-surface text-primary shadow-sm' : 'text-outline hover:text-on-surface'"
+                  >{{ p.name }}</button>
+                </div>
+              </div>
+              <div class="relative">
+                <select v-model="aiModel" class="w-full appearance-none rounded-xl border border-indigo-500/20 dark:border-indigo-400/20 bg-white/70 dark:bg-surface-container/60 backdrop-blur-md hover:border-indigo-500 focus:border-indigo-500 py-2.5 px-3 pr-8 text-xs font-bold text-on-surface outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer shadow-sm">
+                  <option v-for="m in (aiModels as any)[aiProvider]" :key="m.id" :value="m.id">{{ m.name }} ({{ m.speed }})</option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
             </div>
-            
-          </div>
+
+            <!-- Enrich action -->
+            <div class="bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-xl p-5 rounded-2xl border border-white/50 dark:border-white/5 shadow-md mb-4">
+              <h4 class="text-[11px] font-black uppercase text-on-surface tracking-widest mb-1">Find Email & Contact</h4>
+              <p class="text-xs text-outline font-medium mb-4 leading-relaxed">The AI will search for a verified business email, key decision-maker name, role, and LinkedIn profile for this company.</p>
+              <button
+                @click="enrichWithAi(selectedLead.id)"
+                :disabled="isEnriching === selectedLead.id"
+                class="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-[11px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:transform-none disabled:shadow-none"
+              >
+                <Sparkles v-if="isEnriching !== selectedLead.id" class="w-4 h-4" />
+                <RefreshCcw v-else class="w-4 h-4 animate-spin" />
+                {{ isEnriching === selectedLead.id ? 'Deep Searching...' : 'Search Email using AI' }}
+              </button>
+            </div>
+
+            <!-- Results (if already enriched) -->
+            <div v-if="selectedLead.email || selectedLead.contactName" class="space-y-2">
+              <h5 class="text-[10px] font-black uppercase text-outline tracking-widest mb-2">Enriched Data</h5>
+              <div v-if="selectedLead.email" class="flex items-center gap-3 bg-green-50 dark:bg-green-500/10 p-3 rounded-xl border border-green-200/50 dark:border-green-500/20">
+                <Mail class="w-4 h-4 text-green-600 flex-shrink-0" />
+                <div>
+                  <p class="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase">Verified Email</p>
+                  <a :href="`mailto:${selectedLead.email}`" class="text-sm font-black text-on-surface hover:text-green-600 transition-colors">{{ selectedLead.email }}</a>
+                </div>
+              </div>
+              <div v-if="selectedLead.contactName" class="flex items-center gap-3 bg-indigo-50 dark:bg-indigo-500/10 p-3 rounded-xl border border-indigo-200/50 dark:border-indigo-500/20">
+                <BadgeCheck class="w-4 h-4 text-indigo-600 flex-shrink-0" />
+                <div>
+                  <p class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase">Contact</p>
+                  <p class="text-sm font-black text-on-surface">{{ selectedLead.contactName }}</p>
+                  <p v-if="selectedLead.contactTitle" class="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase">{{ selectedLead.contactTitle }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Reasoning -->
+            <div v-if="selectedLead.reasoning" class="mt-4 p-4 bg-white/50 dark:bg-surface-container-lowest/50 rounded-2xl border border-white/30 dark:border-white/5">
+              <div class="flex items-center gap-2 mb-3">
+                <Bot class="w-3.5 h-3.5 text-blue-500" />
+                <h5 class="text-[10px] font-black uppercase text-on-surface tracking-widest">AI Reasoning</h5>
+              </div>
+              <div class="space-y-2">
+                <div v-for="(reason, i) in selectedLead.reasoning" :key="i" class="flex gap-2 items-start">
+                  <div class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" :class="i === 0 ? 'bg-green-400' : 'bg-blue-400'"></div>
+                  <p class="text-xs font-medium leading-relaxed text-on-surface-variant">{{ reason }}</p>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- ═══ OUTREACH TAB ═══════════════════════ -->
+          <template v-else-if="panelTab === 'outreach'">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <div class="p-1.5 rounded-lg bg-gradient-to-br from-pink-500 to-rose-500 shadow-sm"><Sparkles class="text-white w-3 h-3" /></div>
+                <h5 class="text-[11px] font-black uppercase text-on-surface tracking-widest">Smart Email</h5>
+              </div>
+              <button @click="generateOutreach(selectedLead.id, $event)" class="text-[10px] font-black text-pink-600 dark:text-pink-400 px-3 py-1.5 bg-pink-50 dark:bg-pink-500/10 rounded-lg hover:bg-pink-100 dark:hover:bg-pink-500/20 transition-all active:scale-95" :class="{'opacity-50 pointer-events-none': isGenerating === selectedLead.id}">
+                {{ isGenerating === selectedLead.id ? 'Generating...' : selectedLead.draftEmailPreview ? 'Regenerate ↻' : 'Generate Now ✨' }}
+              </button>
+            </div>
+
+            <div class="bg-gradient-to-b from-white/80 to-surface-container-lowest/80 dark:from-surface-container-lowest/80 dark:to-surface/50 backdrop-blur-xl p-5 rounded-2xl border border-white/50 dark:border-white/5 shadow-md relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-pink-500/10 to-transparent pointer-events-none rounded-bl-full"></div>
+              <template v-if="selectedLead.draftEmailPreview">
+                <div class="bg-surface-container-low/50 dark:bg-black/20 p-4 rounded-xl border border-white/20 dark:border-white/5 mb-4 relative z-10">
+                  <p class="text-xs font-medium text-on-surface-variant leading-relaxed whitespace-pre-line">{{ selectedLead.draftEmailPreview }}</p>
+                </div>
+                <a v-if="selectedLead.email" :href="`mailto:${selectedLead.email}?subject=${encodeURIComponent(selectedLead.draftEmailPreview?.split('\n')[0]?.replace('Subject: ', '') || 'Logistics Inquiry')}&body=${encodeURIComponent(selectedLead.draftEmailPreview || '')}`" class="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white text-[11px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transition-all hover:-translate-y-0.5 text-center relative z-10">
+                  <Mail class="w-4 h-4" /> Use Template & Send
+                </a>
+                <button v-else @click="panelTab = 'enrich'" class="w-full py-3 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[11px] font-black uppercase tracking-widest rounded-xl text-center relative z-10 border border-indigo-300/30 hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2">
+                  <Sparkles class="w-3.5 h-3.5" /> Find Email First →
+                </button>
+              </template>
+              <div v-else class="flex flex-col items-center justify-center py-8 text-center relative z-10">
+                <div class="w-16 h-16 rounded-full bg-pink-50 dark:bg-pink-500/10 flex items-center justify-center mb-4">
+                  <Sparkles class="w-8 h-8 text-pink-500 animate-[pulse_3s_ease-in-out_infinite]" />
+                </div>
+                <p class="text-sm font-black text-on-surface mb-1">No draft yet</p>
+                <p class="text-[11px] text-outline/80 mb-5 max-w-[240px] leading-relaxed">Deploy the AI agent to generate a hyper-personalized outreach email for this prospect.</p>
+                <button @click="generateOutreach(selectedLead.id, $event)" :disabled="isGenerating === selectedLead.id" class="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white text-[11px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-0.5 transition-all w-full flex items-center justify-center gap-2 disabled:opacity-75 disabled:transform-none disabled:shadow-none">
+                  <RefreshCcw v-if="isGenerating === selectedLead.id" class="w-4 h-4 animate-spin" />
+                  <Bot v-else class="w-4 h-4" />
+                  {{ isGenerating === selectedLead.id ? 'Deploying...' : 'Deploy AI Agent' }}
+                </button>
+              </div>
+            </div>
+          </template>
+
+          <!-- ═══ TIMELINE TAB ════════════════════════ -->
+          <template v-else-if="panelTab === 'timeline'">
+            <div v-if="selectedLead.timeline" class="space-y-5 relative ml-3 mt-2">
+              <div class="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-indigo-500/50 to-outline-variant/30"></div>
+              <div v-for="(event, i) in selectedLead.timeline" :key="i" class="relative pl-6">
+                <div class="absolute left-0 top-1 w-4 h-4 rounded-full"
+                  :class="{
+                    'bg-indigo-500 ring-4 ring-indigo-500/20': event.type === 'active',
+                    'bg-white dark:bg-surface-container border-2 border-indigo-500': event.type === 'planned',
+                    'bg-outline-variant': event.type === 'past'
+                  }"
+                ></div>
+                <p class="text-[11px] font-black uppercase tracking-wider" :class="event.type === 'active' ? 'text-indigo-600 dark:text-indigo-400' : 'text-on-surface-variant'">{{ event.title }}</p>
+                <p class="text-[10px] text-outline font-medium mt-0.5">{{ event.desc }}</p>
+              </div>
+            </div>
+            <div v-else class="flex flex-col items-center justify-center py-12 text-center">
+              <p class="text-sm font-bold text-outline">No timeline events yet</p>
+            </div>
+          </template>
+
         </div>
       </aside>
     </transition>

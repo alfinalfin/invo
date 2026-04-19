@@ -223,6 +223,7 @@ async function requestOpenAiCompatibleJson(prompt, label, selection) {
       body: JSON.stringify({
         model: selection.model,
         temperature: 0.25,
+        max_tokens: 1500,
         messages: [
           {
             role: "system",
@@ -244,12 +245,63 @@ async function requestOpenAiCompatibleJson(prompt, label, selection) {
   return parseJsonResponse(extractOpenAiCompatibleText(payload), label, selection);
 }
 
-export async function requestStructuredJson(prompt, label, selection) {
+const FALLBACK_MODELS = [
+  { provider: "openrouter", model: "meta-llama/llama-3.3-70b-instruct:free" },
+  { provider: "openrouter", model: "google/gemma-3-27b-it:free" },
+  { provider: "groq", model: "llama-3.3-70b-versatile" },
+  { provider: "groq", model: "meta-llama/llama-4-scout-17b-16e-instruct" },
+  { provider: "groq", model: "llama-3.1-8b-instant" }
+];
+
+async function executeModelRequest(prompt, label, selection) {
   if (selection.provider === "gemini") {
     return requestGeminiJson(prompt, label, selection);
   }
-
   return requestOpenAiCompatibleJson(prompt, label, selection);
+}
+
+/**
+ * Safe wrapper — returns null instead of throwing when a provider API key
+ * is not configured. Used in the fallback loop to skip unavailable providers
+ * without crashing the whole request.
+ */
+function tryGetProviderApiKey(provider) {
+  try {
+    return getProviderApiKey(provider);
+  } catch {
+    return null;
+  }
+}
+
+export async function requestStructuredJson(prompt, label, selection) {
+  let lastError = null;
+
+  try {
+    return await executeModelRequest(prompt, label, selection);
+  } catch (err) {
+    lastError = err;
+    logger.warn(`Primary AI Model ${selection.model} on ${selection.provider} failed for ${label}. Engaging failover sequence.`, { message: err.message });
+  }
+
+  for (const fallback of FALLBACK_MODELS) {
+    if (fallback.provider === selection.provider && fallback.model === selection.model) {
+      continue; 
+    }
+    
+    if (!tryGetProviderApiKey(fallback.provider)) {
+      continue;
+    }
+
+    try {
+      logger.info(`Attempting fallback model ${fallback.model} on ${fallback.provider} for ${label}`);
+      return await executeModelRequest(prompt, label, fallback);
+    } catch (fallbackErr) {
+      lastError = fallbackErr;
+      logger.warn(`Fallback model ${fallback.model} failed.`, { message: fallbackErr.message });
+    }
+  }
+
+  throw new Error("All AI failbacks exhausted. Final error: " + (lastError ? lastError.message : "None"));
 }
 
 function uniqueStrings(values) {
@@ -363,6 +415,7 @@ export async function generateLeadEnrichment(lead, fallbackEnrichment, requested
       model: selection?.model || requestedSelection.model,
       message: error.message
     });
-    return fallbackEnrichment;
+    return { ...fallbackEnrichment, aiError: error.message };
   }
 }
+

@@ -277,7 +277,8 @@ export async function generateEmail(req, res, next) {
       status: "success",
       email: enriched.draft_email,
       reasoning: enriched.ai_summary,
-      score: enriched.lead_score
+      score: enriched.lead_score,
+      aiError: enriched.aiError
     });
   } catch (error) {
     next(error);
@@ -376,31 +377,45 @@ export async function enrichSingleLeadAi(req, res, next) {
     // 2. If no email found via scraping, use AI to search/infer
     const selection = resolveAiSelection("leadEnrichment", { provider: aiProvider, model: aiModel });
     
-    // Custom prompt to "Search/Infer" email if missing
+    // Custom prompt to "Search/Infer" email and employee details
     const prompt = [
-      "Find or infer the best contact email for this business.",
-      "If you cannot find a specific email, suggest common formats like info@ or contact@ based on the domain.",
-      "Also identify the likely decision maker (CEO/Director) name if possible.",
-      "Return only a JSON object with: email (string), contactName (string), confidence (0-100).",
+      "You are an expert corporate researcher. For the business below, identify a likely key decision-maker (CEO, Director, Owner).",
+      "If you do not know a specific real person from your training data, create a highly realistic and probable Executive Persona based on common UK/global business naming patterns.",
+      "Infer their likely professional email format (e.g., firstname.lastname@domain.com or info@domain.com).",
+      "Generate a realistic LinkedIn profile URL suffix for them.",
+      "Return ONLY a valid JSON object with EXACTLY these keys: email (string), employeeName (string), employeeRole (string), linkedinUrl (string), confidence (integer 0-100).",
       `Business: ${JSON.stringify({
         company: lead.company,
-        website: lead.website,
+        website: lead.website || (lead.company.toLowerCase().replace(/\s/g, '') + '.com'),
         location: lead.location
       })}`
     ].join("\n");
 
-    const aiSearch = await requestStructuredJson(prompt, "AI Email Inference", selection);
+    let aiSearch = {};
+    let aiError = null;
+    try {
+      aiSearch = await requestStructuredJson(prompt, "AI Employee Intelligence Inference", selection);
+    } catch (err) {
+      aiError = err.message;
+      logger.warn("Deep AI Employee Inference failed, returning partially scraped data instead.", {
+        company: lead.company,
+        message: aiError
+      });
+    }
 
     const finalResult = {
       ...leadWithEmail,
       email: leadWithEmail.email || aiSearch.email || null,
-      contactName: lead.contactName || aiSearch.contactName || null
+      contactName: lead.contactName || aiSearch.employeeName || null,
+      contactTitle: lead.contactTitle || aiSearch.employeeRole || null,
+      linkedinUrl: lead.linkedinUrl || aiSearch.linkedinUrl || null
     };
 
     res.status(200).json({
       status: "success",
       lead: finalResult,
-      confidence: aiSearch.confidence || 50
+      confidence: aiSearch.confidence || 50,
+      aiError: aiError || undefined
     });
   } catch (error) {
     next(error);
