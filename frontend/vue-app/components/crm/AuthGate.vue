@@ -10,6 +10,7 @@ import { CircleAlert, LockKeyhole, ShieldCheck } from "lucide-vue-next";
 import { useFirebaseServices } from "~/composables/useFirebaseServices";
 
 export type SessionState = {
+  uid: string;
   displayName: string;
   displayEmail: string;
 };
@@ -76,6 +77,7 @@ watch(
       }
 
       session.value = {
+        uid: user.uid,
         displayName: user.displayName || "Admin",
         displayEmail: user.email || "admin@invoaura.com",
       };

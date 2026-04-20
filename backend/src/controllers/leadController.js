@@ -252,7 +252,7 @@ export async function scrapeLeads(req, res, next) {
 
 export async function generateEmail(req, res, next) {
   try {
-    const { lead, aiProvider, aiModel } = req.body;
+    const { lead, aiProvider, aiModel, customPrompt } = req.body;
     if (!lead || !lead.company) {
       throw createAppError(400, "Valid lead object with company name required.");
     }
@@ -271,7 +271,7 @@ export async function generateEmail(req, res, next) {
     
     logger.info("Generating discrete email outreach via AI", { company: lead.company, ...requestedSelection });
     
-    const enriched = await generateLeadEnrichment(lead, defaultEnrichment, requestedSelection);
+    const enriched = await generateLeadEnrichment(lead, defaultEnrichment, requestedSelection, customPrompt);
     
     // Persist the generated email/score back to the database if possible
     const userId = getUserId(req, {});

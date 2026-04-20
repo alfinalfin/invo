@@ -8,12 +8,14 @@ const API_BASE = (config.public.apiBase as string)?.replace(/\/$/, '') || 'https
 
 const props = defineProps<{
   leads?: LeadRecord[];
+  userId: string;
 }>();
 
 const emit = defineEmits<{
   (e: 'delete-lead', id: string): void;
   (e: 'wipe-all-leads', collectionName: 'ai_leads' | 'leads', ids?: string[]): void;
   (e: 'import'): void;
+  (e: 'update-lead', id: string, updates: Partial<LeadRecord>): void;
 }>();
 
 
@@ -21,6 +23,8 @@ interface TimelineEvent {
   title: string;
   desc: string;
   type: "active" | "planned" | "past";
+  actionLabel?: string;
+  stepIdx?: number;
 }
 
 interface Lead {
@@ -31,7 +35,7 @@ interface Lead {
   location: string;
   aiScore: number;
   matchRate: number;
-  status: "Hot" | "Warm" | "Cold" | "Follow-up";
+  status: "Hot" | "Warm" | "Cold" | "Follow-up" | "Converted" | "Closed";
   label: string;
   lastContacted: string;
   needsAction?: boolean;
@@ -46,6 +50,7 @@ interface Lead {
   draftEmailPreview?: string;
   rawSource: string;
   employees?: Employee[];
+  outreachStage: number;
 }
 
 function timeAgo(dateString: string) {
@@ -63,13 +68,13 @@ const SOURCE_LABELS: Record<string, string> = {
   google_maps:     "Google Maps",
   companies_house: "UK Companies House",
   yelp:            "Yelp Directory",
-  "Lead Engine":   "Lead Engine",
+  "B2B Lead Engine":   "B2B Lead Engine",
   "Google Ads":    "Google Ads",
   "google_ads":    "Google Ads",
 };
 
 function sourceLabel(raw: string | undefined): string {
-  if (!raw) return "Lead Engine";
+  if (!raw) return "B2B Lead Engine";
   return SOURCE_LABELS[raw] ?? raw;
 }
 
@@ -94,7 +99,7 @@ const aiLeads = computed<Lead[]>(() => {
       company: l.company || "Unknown",
       initials: (l.company || "U").substring(0, 2).toUpperCase(),
       type: l.goodsDescription || sourceLabel(l.source),
-      rawSource: l.source || "Lead Engine",
+      rawSource: l.source || "B2B Lead Engine",
       location: l.pickupAddress || "Unknown",
       aiScore: localScores.value[l.id] !== undefined ? localScores.value[l.id] / 10 : (l.lead_score ? l.lead_score / 10 : Math.round((7 + Math.random() * 2.8) * 10) / 10),
       matchRate: Math.round(75 + Math.random() * 24),
@@ -115,15 +120,24 @@ const aiLeads = computed<Lead[]>(() => {
         `Click 'Deploy AI Agent' below to generate a deep executive brief and intelligent email draft.`
       ]),
       draftEmailPreview: localEmailDrafts.value[l.id] || ((l.draft_email || l.notes) ? (l.draft_email || l.notes)!.replace(/AI Suggested Email Draft:\n?/i, '') : ""),
-      timeline: [
-        { title: "Processed by AI Engine", desc: l.createdAt ? timeAgo(l.createdAt) : "Just now", type: "active" },
-        { title: "Sourced via " + l.source, desc: "Automatic Extraction", type: "past" }
-      ]
+      outreachStage: (l as any).outreach_stage || 0,
+      timeline: ((): TimelineEvent[] => {
+        const stage = (l as any).outreach_stage || 0;
+        
+        return [
+          { stepIdx: 0, title: "Day 0 → Lead Captured", desc: `Sourced via ${sourceLabel(l.source)}`, type: stage > 0 ? "past" : "active", actionLabel: "Start Outreach ➔" } as TimelineEvent,
+          { stepIdx: 1, title: "Day 0 → Email Sent", desc: (l.draft_email || l.notes) ? "AI Outreach Delivered" : "Awaiting AI Draft", type: stage === 1 ? "active" : (stage > 1 ? "past" : "planned"), actionLabel: "Mark Opened/Tracked ➔" } as TimelineEvent,
+          { stepIdx: 2, title: "Day 1 → Track Open/Click", desc: "Engagement Monitoring", type: stage === 2 ? "active" : (stage > 2 ? "past" : "planned"), actionLabel: "Log Follow-Up #1 ➔" } as TimelineEvent,
+          { stepIdx: 3, title: "Day 2 → Follow-up #1", desc: "Sequential outreach", type: stage === 3 ? "active" : (stage > 3 ? "past" : "planned"), actionLabel: "Log Follow-Up #2 ➔" } as TimelineEvent,
+          { stepIdx: 4, title: "Day 4 → Follow-up #2", desc: "Nurture sequence", type: stage === 4 ? "active" : (stage > 4 ? "past" : "planned"), actionLabel: "Mark Final/Closed ➔" } as TimelineEvent,
+          { stepIdx: 5, title: "Day 6 → Final Attempt / Close", desc: "Pipeline cleanup", type: stage === 5 ? "active" : "planned", actionLabel: "Close Sequence" } as TimelineEvent,
+        ];
+      })()
     }
   });
 });
 
-const activeFilter = ref<"All" | "Hot Leads" | "Follow-up">("All");
+const activeFilter = ref<"All" | "New" | "Hot Leads" | "Follow-up">("New");
 const sourceFilter = ref<"All" | "google_maps" | "google_ads" | "companies_house" | "yelp" | "crm">("All");
 const selectedLeadId = ref<string | null>(null);
 const panelTab = ref<'overview' | 'enrich' | 'outreach' | 'timeline'>('overview');
@@ -134,7 +148,6 @@ const TABS = [
   { id: 'outreach' as const, label: 'Outreach',  icon: '📧' },
   { id: 'timeline' as const, label: 'Timeline',  icon: '🕐' },
 ];
-
 
 const sourceCounts = computed(() => {
   const counts = {
@@ -161,9 +174,11 @@ const filteredLeads = computed(() => {
 
   // 1. Status Filter
   if (activeFilter.value === "Hot Leads") {
-    leads = leads.filter(lead => lead.status === "Hot");
+    leads = leads.filter(lead => lead.status === "Hot" || lead.status === "Converted");
   } else if (activeFilter.value === "Follow-up") {
-    leads = leads.filter(lead => lead.status === "Follow-up" || lead.status === "Warm");
+    leads = leads.filter(lead => lead.outreachStage >= 1 && lead.outreachStage < 5 && lead.status !== 'Converted' && lead.status !== 'Closed');
+  } else if (activeFilter.value === "New") {
+    leads = leads.filter(lead => lead.outreachStage === 0);
   }
 
   // 2. Source Filter
@@ -188,13 +203,23 @@ const selectedLead = computed(() =>
 
 const stats = computed(() => {
   const total = aiLeads.value.length;
-  const hot = aiLeads.value.filter(l => l.status === 'Hot').length;
-  const contacted = aiLeads.value.filter(l => l.label === 'Contacted' || l.label === 'Replied').length;
+  const hot = aiLeads.value.filter(l => l.status === 'Hot' || l.status === 'Converted').length;
+  const contacted = aiLeads.value.filter(l => l.outreachStage >= 1 && l.outreachStage < 5).length;
   const conv = total > 0 ? ((contacted / total) * 100).toFixed(1) : "0.0";
   return { total, hot, contacted, conv };
 });
 
+const tabCounts = computed(() => {
+  return {
+    all: aiLeads.value.length,
+    new: aiLeads.value.filter(lead => lead.outreachStage === 0).length,
+    hot: aiLeads.value.filter(lead => lead.status === "Hot" || lead.status === "Converted").length,
+    followup: aiLeads.value.filter(lead => lead.outreachStage >= 1 && lead.outreachStage < 5 && lead.status !== 'Converted' && lead.status !== 'Closed').length
+  };
+});
+
 const isGenerating = ref<string | null>(null);
+const customEmailPrompt = ref("");
 const toastMessage = ref("");
 
 const showWipeConfirm = ref(false);
@@ -269,7 +294,6 @@ function onPointerDown(e: PointerEvent, id: string) {
     if (!isDragging.value && swipingId.value === id) {
       isSelectionMode.value = true;
       toggleSelect(id);
-      if (window.navigator.vibrate) window.navigator.vibrate(50);
     }
   }, 600);
 }
@@ -325,6 +349,24 @@ function confirmDelete() {
   setTimeout(() => (toastMessage.value = ''), 3000);
 }
 
+function advanceTimeline(id: string) {
+  const lead = aiLeads.value.find(l => l.id === id);
+  if (!lead) return;
+  const nextStage = Math.min((lead.outreachStage || 0) + 1, 5);
+  
+  let newStatus: string = "Contacted";
+  if (nextStage === 0) newStatus = "New";
+  else if (nextStage === 1) newStatus = "Contacted";
+  else if (nextStage === 2) newStatus = "Contacted";
+  else if (nextStage === 3) newStatus = "In progress";
+  else if (nextStage === 4) newStatus = "Follow-up"; 
+  else if (nextStage === 5) newStatus = "Closed";
+
+  emit('update-lead', id, { outreach_stage: nextStage, status: newStatus as any });
+  toastMessage.value = `Advanced to Stage ${nextStage}! 🚀`;
+  setTimeout(() => toastMessage.value = "", 3000);
+}
+
 function handleRowClick(id: string) {
   if (isDragging.value) return; // don't select while swiping
   selectLead(id);
@@ -345,7 +387,7 @@ async function generateOutreach(id: string, event: Event) {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "x-user-id": "local-dev-user-123"
+        "x-user-id": props.userId
       },
       body: JSON.stringify({
         lead: {
@@ -354,7 +396,8 @@ async function generateOutreach(id: string, event: Event) {
           source: lead.type
         },
         aiProvider: aiProvider.value,
-        aiModel: aiModel.value
+        aiModel: aiModel.value,
+        customPrompt: customEmailPrompt.value
       })
     });
     
@@ -365,6 +408,12 @@ async function generateOutreach(id: string, event: Event) {
          if (data.email) localEmailDrafts.value[id] = data.email;
          if (data.reasoning) localReasoning.value[id] = data.reasoning;
          if (data.score) localScores.value[id] = data.score;
+         
+         emit('update-lead', id, {
+           draft_email: data.email || localEmailDrafts.value[id] || '',
+           ai_summary: data.reasoning || localReasoning.value[id] || '',
+           lead_score: data.score ? Math.round(data.score * 10) : (localScores.value[id] ? Math.round(localScores.value[id] * 10) : 85),
+         });
          
          if (data.aiError) {
            toastMessage.value = `API Error: ${data.aiError}`;
@@ -399,7 +448,7 @@ async function enrichWithAi(id: string) {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "x-user-id": "local-dev-user-123"
+        "x-user-id": props.userId
       },
       body: JSON.stringify({
         lead: {
@@ -422,6 +471,14 @@ async function enrichWithAi(id: string) {
         if (data.lead.contactTitle) localContactTitles.value[id] = data.lead.contactTitle;
         if (data.lead.linkedinUrl) localLinkedinUrls.value[id] = data.lead.linkedinUrl;
         if (data.lead.employees) localEmployees.value[id] = data.lead.employees;
+
+        emit('update-lead', id, {
+          email: data.lead.email || localEmails.value[id] || '',
+          contactName: data.lead.contactName || localContactNames.value[id] || '',
+          contactTitle: data.lead.contactTitle || localContactTitles.value[id] || '',
+          linkedinUrl: data.lead.linkedinUrl || localLinkedinUrls.value[id] || '',
+          employees: data.lead.employees || localEmployees.value[id] || [],
+        });
 
         const foundEmail = data.lead.email;
         const foundContact = data.lead.contactName;
@@ -456,6 +513,13 @@ async function enrichWithAi(id: string) {
     isEnriching.value = null;
     setTimeout(() => toastMessage.value = "", 6000);
   }
+}
+
+function markAsConverted() {
+  if (!selectedLeadId.value) return;
+  emit('update-lead', selectedLeadId.value, { status: 'Converted' as any });
+  toastMessage.value = 'Lead Marked as Hot/Converted! 🔥';
+  setTimeout(() => toastMessage.value = '', 3000);
 }
 
 function selectLead(id: string) {
@@ -525,39 +589,39 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
       <div>
-        <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-1">Lead Engine</h1>
-        <p class="text-on-surface-variant font-medium">AI-powered freight forwarder lead management</p>
+        <h1 class="section-heading mb-2">B2B Lead Engine</h1>
+        <p class="subtle-copy">AI-powered logistics and freight lead intelligence</p>
       </div>
       <div class="flex items-center gap-3">
         <button 
           v-if="selectedIds.size > 0"
           @click="handleDeleteSelected"
-          class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all flex items-center gap-2 shadow-lg shadow-red-500/20"
+          class="px-5 py-2.5 bg-[var(--danger)] text-white font-bold rounded-2xl hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-[var(--danger)]/30 hover-lift"
         >
           <TrashIcon class="w-4 h-4" />
           Delete Selected ({{ selectedIds.size }})
         </button>
         <button 
           @click="emit('import')"
-          class="px-5 py-2.5 bg-surface-container-high text-primary font-bold rounded-xl hover:bg-surface-container-highest transition-colors flex items-center gap-2"
+          class="px-5 py-2.5 glass-panel text-[var(--text-primary)] border border-[var(--border-strong)] font-bold rounded-2xl hover:bg-[var(--surface-secondary)] transition-all flex items-center gap-2 hover-lift"
         >
-          <Globe class="w-4 h-4" />
-          Import Leads
+          <Globe class="w-4 h-4 text-[var(--accent)]" />
+          Import
         </button>
         <button 
           v-if="!isSelectionMode"
           @click="triggerWipeAll"
-          class="px-5 py-2.5 bg-red-500/10 text-red-500 border border-red-500/20 font-bold rounded-xl hover:bg-red-500/20 transition-all flex items-center gap-2"
+          class="px-5 py-2.5 bg-[var(--danger)]/10 text-[var(--danger)] border border-[var(--danger)]/20 font-bold rounded-2xl hover:bg-[var(--danger)]/20 transition-all flex items-center gap-2"
         >
           <TrashIcon class="w-4 h-4" />
-          Clear All
+          Clear
         </button>
         <button 
           v-else
           @click="toggleSelectionMode"
-          class="px-5 py-2.5 bg-on-surface text-surface font-black rounded-xl hover:scale-105 active:scale-95 transition-all"
+          class="px-5 py-2.5 bg-[var(--surface-contrast)] text-[var(--page-bg)] font-black rounded-2xl hover-lift"
         >
-          Cancel Selection
+          Cancel
         </button>
       </div>
     </div>
@@ -566,110 +630,118 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
 
     <!-- Stats Row -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-      <div class="bg-surface-container-lowest dark:bg-surface-container p-6 rounded-xl shadow-sm">
-        <p class="text-sm font-semibold text-on-surface-variant mb-2">Total Leads</p>
-        <div class="flex items-end gap-3">
-          <span class="text-3xl font-black tracking-tight">{{ stats.total }}</span>
-          <span class="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded-full mb-1">+0%</span>
+      <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover-lift">
+        <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent-soft)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <p class="text-[11px] font-extrabold tracking-widest text-[var(--text-muted)] uppercase mb-2 relative z-10">Total Leads</p>
+        <div class="flex items-end gap-3 relative z-10">
+          <span class="text-4xl font-black tracking-tighter text-[var(--text-primary)]">{{ stats.total }}</span>
+          <span class="text-[10px] font-bold text-[var(--success)] bg-[var(--success)]/10 px-2 py-0.5 rounded-md mb-1">+0%</span>
         </div>
       </div>
-      <div class="bg-surface-container-lowest dark:bg-surface-container p-6 rounded-xl shadow-sm">
-        <p class="text-sm font-semibold text-on-surface-variant mb-2">Hot Leads 🔥</p>
-        <div class="flex items-end gap-3">
-          <span class="text-3xl font-black tracking-tight text-error">{{ stats.hot }}</span>
-          <span class="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded-full mb-1">+0%</span>
+      <div class="glass-panel glow-border p-6 rounded-3xl relative overflow-hidden group hover-lift">
+        <div class="absolute inset-0 bg-gradient-to-br from-[var(--danger)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <p class="text-[11px] font-extrabold tracking-widest text-[var(--text-muted)] uppercase mb-2 relative z-10 flex items-center gap-1">Hot Leads 🔥</p>
+        <div class="flex items-end gap-3 relative z-10">
+          <span class="text-4xl font-black tracking-tighter text-[var(--danger)] drop-shadow-md">{{ stats.hot }}</span>
+          <span class="text-[10px] font-bold text-[var(--success)] bg-[var(--success)]/10 px-2 py-0.5 rounded-md mb-1">+0%</span>
         </div>
       </div>
-      <div class="bg-surface-container-lowest dark:bg-surface-container p-6 rounded-xl shadow-sm">
-        <p class="text-sm font-semibold text-on-surface-variant mb-2">Contacted 📩</p>
-        <div class="flex items-end gap-3">
-          <span class="text-3xl font-black tracking-tight">{{ stats.contacted }}</span>
-          <span class="text-xs font-bold text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-full mb-1">+0%</span>
+      <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover-lift">
+        <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent-soft)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <p class="text-[11px] font-extrabold tracking-widest text-[var(--text-muted)] uppercase mb-2 relative z-10">Contacted 📩</p>
+        <div class="flex items-end gap-3 relative z-10">
+          <span class="text-4xl font-black tracking-tighter text-[var(--text-primary)]">{{ stats.contacted }}</span>
         </div>
       </div>
-      <div class="bg-surface-container-lowest dark:bg-surface-container p-6 rounded-xl shadow-sm border-l-4 border-primary">
-        <p class="text-sm font-semibold text-on-surface-variant mb-2">Conversion Rate 📊</p>
-        <div class="flex items-end gap-3">
-          <span class="text-3xl font-black tracking-tight">{{ stats.conv }}%</span>
-          <span class="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded-full mb-1">+0.0%</span>
+      <div class="glass-panel p-6 rounded-3xl bg-gradient-to-br from-[var(--surface-primary)] to-[var(--surface-secondary)] border-b-4 border-[var(--accent)] relative overflow-hidden group hover-lift">
+        <p class="text-[11px] font-extrabold tracking-widest text-[var(--text-muted)] uppercase mb-2 relative z-10">Conversion Rate 📊</p>
+        <div class="flex items-end gap-3 relative z-10">
+          <span class="text-4xl font-black tracking-tighter text-gradient-accent">{{ stats.conv }}%</span>
         </div>
       </div>
     </div>
 
     <!-- Filter & Tabs -->
-    <div class="bg-surface-container-lowest dark:bg-surface-container rounded-xl shadow-sm p-4 mb-6">
-      <div class="flex flex-col gap-3">
+    <div class="glass-panel p-5 mb-6 rounded-3xl">
+      <div class="flex flex-col gap-4">
         <!-- Row 1: Status filters -->
-        <div class="flex items-center gap-1 p-1 bg-surface-container-low rounded-xl self-start">
+        <div class="flex items-center gap-2 p-1.5 bg-[var(--sidebar-surface)] rounded-2xl self-start backdrop-blur-md border border-[var(--border-color)]">
           <button 
             @click="activeFilter = 'All'"
-            :class="activeFilter === 'All' ? 'bg-white dark:bg-surface shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-surface'"
-            class="px-4 py-1.5 text-sm font-bold rounded-lg transition-colors"
+            :class="activeFilter === 'All' ? 'bg-[var(--surface-primary)] shadow-sm text-[var(--accent-strong)] glow-border' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+            class="px-5 py-2 text-xs font-black tracking-wide rounded-xl transition-all flex items-center gap-2"
           >
-            All Leads
+            All Leads <span class="bg-[var(--surface-container)] text-[9px] px-1.5 py-0.5 rounded-md">{{ tabCounts.all }}</span>
           </button>
           <button 
-            @click="activeFilter = 'Hot Leads'"
-            :class="activeFilter === 'Hot Leads' ? 'bg-white dark:bg-surface shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-surface'"
-            class="px-4 py-1.5 text-sm font-bold rounded-lg transition-colors"
+            @click="activeFilter = 'New'"
+            :class="activeFilter === 'New' ? 'bg-[var(--surface-primary)] shadow-sm text-[var(--accent-strong)] glow-border' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+            class="px-5 py-2 text-xs font-black tracking-wide rounded-xl transition-all flex items-center gap-2"
           >
-            Hot Leads 🔥
+            New Leads 🌟 <span class="bg-[var(--surface-container)] text-[9px] px-1.5 py-0.5 rounded-md">{{ tabCounts.new }}</span>
           </button>
           <button 
             @click="activeFilter = 'Follow-up'"
-            :class="activeFilter === 'Follow-up' ? 'bg-white dark:bg-surface shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-surface'"
-            class="px-4 py-1.5 text-sm font-bold rounded-lg transition-colors"
+            :class="activeFilter === 'Follow-up' ? 'bg-[var(--surface-primary)] shadow-sm text-[var(--warning)] glow-border' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+            class="px-5 py-2 text-xs font-black tracking-wide rounded-xl transition-all flex items-center gap-2"
           >
-            Follow-Up Needed ⏳
+            Follow-Up Needed ⏳ <span class="bg-[var(--surface-container)] text-[9px] px-1.5 py-0.5 rounded-md">{{ tabCounts.followup }}</span>
+          </button>
+          <button 
+            @click="activeFilter = 'Hot Leads'"
+            :class="activeFilter === 'Hot Leads' ? 'bg-[var(--surface-primary)] shadow-sm text-[var(--danger)] glow-border' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+            class="px-5 py-2 text-xs font-black tracking-wide rounded-xl transition-all flex items-center gap-2"
+          >
+            Hot Leads 🔥 <span class="bg-[var(--surface-container)] text-[9px] px-1.5 py-0.5 rounded-md">{{ tabCounts.hot }}</span>
           </button>
         </div>
 
         <!-- Row 2: Source filters -->
-        <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-[11px] font-black text-outline uppercase tracking-wider">Source:</span>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span class="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mr-2">Source Protocol:</span>
           <button
             @click="sourceFilter = 'All'"
-            :class="sourceFilter === 'All' ? 'bg-on-surface text-surface' : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'"
-            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold transition-all"
+            :class="sourceFilter === 'All' ? 'bg-[var(--surface-contrast)] text-[var(--page-bg)]' : 'bg-[var(--surface-accent)] text-[var(--accent)] border border-[var(--border-strong)] hover:bg-[var(--sidebar-surface)]'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black transition-all hover-lift"
           >
-            All Sources ({{ sourceCounts.all }})
+            All Sources <span class="opacity-70 font-bold ml-1">[{{ sourceCounts.all }}]</span>
           </button>
           <button
             @click="sourceFilter = 'google_ads'"
-            :class="sourceFilter === 'google_ads' ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 hover:bg-amber-100'"
-            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold transition-all"
+            :class="sourceFilter === 'google_ads' ? 'bg-[#f59e0b] text-white shadow-lg shadow-[#f59e0b]/30' : 'bg-[#f59e0b]/10 text-[#f59e0b] border border-[#f59e0b]/20 hover:bg-[#f59e0b]/20'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black transition-all hover-lift"
           >
-            <Bot class="w-3 h-3" />
-            Google Ads ({{ sourceCounts.google_ads }})
+            <Bot class="w-3.5 h-3.5" />
+            Google Ads <span class="opacity-70 font-bold ml-1">[{{ sourceCounts.google_ads }}]</span>
           </button>
           <button
             @click="sourceFilter = 'companies_house'"
-            :class="sourceFilter === 'companies_house' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 hover:bg-emerald-100'"
-            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold transition-all"
+            :class="sourceFilter === 'companies_house' ? 'bg-[#10b981] text-white shadow-lg shadow-[#10b981]/30' : 'bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20 hover:bg-[#10b981]/20'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black transition-all hover-lift"
           >
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M9 21V9l6-6 6 6v12M9 21h6"/></svg>
-            UK Companies House ({{ sourceCounts.companies_house }})
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M9 21V9l6-6 6 6v12M9 21h6"/></svg>
+            UK Companies House <span class="opacity-70 font-bold ml-1">[{{ sourceCounts.companies_house }}]</span>
           </button>
           <button
             @click="sourceFilter = 'crm'"
-            :class="sourceFilter === 'crm' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400 hover:bg-purple-100'"
-            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold transition-all"
+            :class="sourceFilter === 'crm' ? 'bg-gradient-primary text-white shadow-lg shadow-[var(--accent-strong)]/30' : 'bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border-strong)] hover:bg-[var(--accent)]/20'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black transition-all hover-lift"
           >
-            <Database class="w-3 h-3" />
-            CRM Leads ({{ sourceCounts.crm }})
+            <Database class="w-3.5 h-3.5" />
+            CRM Imports <span class="opacity-70 font-bold ml-1">[{{ sourceCounts.crm }}]</span>
           </button>
         </div>
       </div>
     </div>
 
     <!-- Table Header -->
-<div class="grid grid-cols-12 px-4 py-3 bg-surface-container border-b-0 rounded-lg text-xs font-black uppercase tracking-widest text-outline">
+    <div class="grid grid-cols-12 px-4 py-4 mb-2 bg-[var(--surface-primary)] border border-[var(--border-color)] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] shadow-sm backdrop-blur-xl">
       <div class="col-span-1 flex items-center justify-center">
         <div 
           v-if="isSelectionMode"
           @click="toggleSelectAll"
           class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all cursor-pointer"
-          :class="isAllSelected ? 'bg-primary border-primary' : 'border-outline-variant hover:border-primary'"
+          :class="isAllSelected ? 'bg-[var(--accent)] border-[var(--accent)]' : 'border-[var(--border-strong)] hover:border-[var(--accent)]'"
         >
           <BadgeCheck v-if="isAllSelected" class="w-3.5 h-3.5 text-white" />
         </div>
@@ -690,19 +762,22 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
         class="relative mt-2 overflow-hidden rounded-xl"
       >
         <!-- Red delete backdrop (revealed on swipe) -->
-        <div class="absolute inset-0 bg-gradient-to-l from-red-600 to-red-500 flex items-center justify-end pr-6 rounded-xl z-0 select-none">
+        <div 
+          class="absolute inset-0 bg-gradient-to-l from-red-600 to-[var(--danger)] flex items-center justify-end pr-6 rounded-2xl z-0 select-none transition-opacity duration-300"
+          :class="(swipeState[lead.id] || 0) < 0 ? 'opacity-100' : 'opacity-0'"
+        >
           <div class="flex flex-col items-center gap-1 text-white">
             <TrashIcon class="w-6 h-6" />
-            <span class="text-[10px] font-black uppercase tracking-widest">Delete</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-red-100">Delete</span>
           </div>
         </div>
 
         <!-- Swipeable foreground card -->
         <div
-          class="grid grid-cols-12 px-4 py-5 items-center cursor-pointer relative z-10 bg-surface dark:bg-surface-container rounded-xl select-none group/row"
+          class="grid grid-cols-12 px-4 py-5 items-center cursor-pointer relative z-10 glass-panel border-[var(--border-color)] rounded-2xl select-none group/row transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[var(--shadow-soft)] mb-2.5"
           :class="[
-            selectedLeadId === lead.id ? 'border-l-4 border-primary bg-primary/5' : 'border-l-4 border-transparent hover:bg-surface-container-low',
-            selectedIds.has(lead.id) ? 'bg-primary/5' : ''
+            selectedLeadId === lead.id ? 'border-l-4 border-l-[var(--accent)] bg-[var(--surface-secondary)]' : 'border-l-4 border-l-transparent hover:bg-[var(--surface-secondary)]',
+            selectedIds.has(lead.id) ? 'bg-[var(--accent-soft)]' : ''
           ]"
           :style="{
             transform: `translateX(${swipeState[lead.id] ?? 0}px)`,
@@ -718,15 +793,15 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
             <div 
               v-if="isSelectionMode"
               class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shadow-sm"
-              :class="selectedIds.has(lead.id) ? 'bg-primary border-primary scale-110' : 'border-outline-variant bg-white dark:bg-surface-container-high'"
+              :class="selectedIds.has(lead.id) ? 'bg-[var(--accent)] border-[var(--accent)] scale-110' : 'border-[var(--border-strong)] bg-[var(--surface-primary)]'"
             >
               <BadgeCheck v-if="selectedIds.has(lead.id)" class="w-4 h-4 text-white" />
             </div>
           </div>
           <div class="col-span-3 flex items-center gap-3 min-w-0 pr-4">
             <div
-              class="w-10 h-10 rounded-lg flex items-center justify-center font-black flex-shrink-0"
-              :class="selectedLeadId === lead.id ? 'bg-primary/10 text-primary' : 'bg-surface-container-highest text-secondary'"
+              class="w-10 h-10 rounded-xl flex items-center justify-center font-black flex-shrink-0"
+              :class="selectedLeadId === lead.id ? 'bg-[var(--accent-soft)] text-[var(--accent-strong)]' : 'bg-[var(--sidebar-surface)] text-[var(--text-secondary)] border border-[var(--border-color)]'"
             >
               {{ lead.initials }}
             </div>
@@ -735,13 +810,13 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
                 <p class="font-bold text-on-surface truncate text-sm">{{ lead.company }}</p>
                 <!-- Prominent Source badge next to name -->
                 <span
-                  class="text-[10px] font-black px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 shadow-sm"
+                  class="text-[9px] font-black px-2 py-0.5 rounded-md flex-shrink-0 flex items-center gap-1 shadow-sm uppercase tracking-wide border"
                   :class="{
-                    'bg-blue-600 text-white':    lead.rawSource === 'google_maps',
-                    'bg-amber-500 text-white':   lead.rawSource.toLowerCase().includes('ads'),
-                    'bg-emerald-600 text-white': lead.rawSource === 'companies_house',
-                    'bg-red-600 text-white':        lead.rawSource === 'yelp',
-                    'bg-purple-600 text-white': !['google_maps','companies_house','yelp'].includes(lead.rawSource) && !lead.rawSource.toLowerCase().includes('ads')
+                    'bg-[#2563eb]/20 text-[#3b82f6] border-[#3b82f6]/30': lead.rawSource === 'google_maps',
+                    'bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/30': lead.rawSource.toLowerCase().includes('ads'),
+                    'bg-[#10b981]/20 text-[#10b981] border-[#10b981]/30': lead.rawSource === 'companies_house',
+                    'bg-[#ef4444]/20 text-[#ef4444] border-[#ef4444]/30': lead.rawSource === 'yelp',
+                    'bg-[var(--accent)]/20 text-[var(--accent)] border-[var(--accent)]/30': !['google_maps','companies_house','yelp'].includes(lead.rawSource) && !lead.rawSource.toLowerCase().includes('ads')
                   }"
                 >
                   <svg v-if="lead.rawSource === 'google_maps'" class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -752,8 +827,8 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
                 <span v-if="lead.needsAction" class="bg-primary/10 text-primary text-[8px] font-black px-1.5 py-0.5 rounded uppercase flex-shrink-0">Action</span>
               </div>
               <div class="flex items-center gap-2 mt-0.5 min-w-0">
-                <p class="text-[10px] font-bold text-outline uppercase truncate flex-shrink-0">{{ lead.type }}</p>
-                <div v-if="lead.email || lead.phone" class="flex items-center gap-2 border-l border-outline-variant/30 pl-2 min-w-0">
+                <p v-if="lead.type && lead.type.toLowerCase() !== lead.rawSource.toLowerCase()" class="text-[10px] font-bold text-[var(--text-muted)] uppercase truncate flex-shrink-0">{{ lead.type }}</p>
+                <div v-if="lead.email || lead.phone" class="flex items-center gap-2 border-l border-[var(--border-strong)] pl-2 min-w-0">
                   <span v-if="lead.phone" class="text-[10px] text-outline truncate flex items-center gap-1 flex-shrink-0"><Phone class="w-3 h-3 flex-shrink-0"/> {{ lead.phone }}</span>
                   <span v-if="lead.email" class="text-[10px] text-outline truncate flex items-center gap-1 min-w-0"><Mail class="w-3 h-3 flex-shrink-0"/> <span class="truncate">{{ lead.email }}</span></span>
                 </div>
@@ -806,7 +881,7 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
       </div>
       
       <div v-if="filteredLeads.length === 0" class="py-12 text-center text-outline font-medium">
-        No AI leads found matching the criteria.
+        No B2B Lead Engine leads found matching the criteria.
       </div>
     </div>
     
@@ -832,7 +907,12 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
               <p class="text-[10px] font-bold text-outline mt-0.5 truncate max-w-[220px]">{{ selectedLead.company }}</p>
             </div>
           </div>
-          <button @click="selectedLeadId = null" class="p-2 bg-white/50 dark:bg-black/20 hover:bg-white dark:hover:bg-white/10 rounded-full transition-all border border-black/5 dark:border-white/10 shadow-sm"><X class="w-4 h-4 text-on-surface" /></button>
+          <div class="flex items-center gap-2">
+            <button v-if="selectedLead.status !== 'Converted'" @click="markAsConverted()" class="px-3 py-1.5 bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white rounded-lg text-[9px] font-black uppercase tracking-widest transition-all shadow-md shadow-orange-500/20 flex items-center gap-1 hover-lift">
+              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg> Mark Success
+            </button>
+            <button @click="selectedLeadId = null" class="p-2 bg-white/50 dark:bg-black/20 hover:bg-white dark:hover:bg-white/10 rounded-full transition-all border border-black/5 dark:border-white/10 shadow-sm"><X class="w-4 h-4 text-on-surface" /></button>
+          </div>
         </div>
 
         <!-- ── Tab Bar ──────────────────────────────── -->
@@ -1107,6 +1187,16 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
               </button>
             </div>
 
+            <div class="mb-4">
+              <label class="block text-[10px] font-black uppercase text-outline tracking-widest mb-2">Custom Instructions (Optional)</label>
+              <textarea 
+                v-model="customEmailPrompt" 
+                placeholder="E.g., Keep it under 50 words, sound casual, or mention our new London warehouse..."
+                class="w-full bg-surface-container/50 border border-outline-variant/30 text-xs font-medium text-on-surface p-3 rounded-xl focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 outline-none resize-none transition-all placeholder:text-outline/50"
+                rows="2"
+              ></textarea>
+            </div>
+
             <div class="bg-gradient-to-b from-white/80 to-surface-container-lowest/80 dark:from-surface-container-lowest/80 dark:to-surface/50 backdrop-blur-xl p-5 rounded-2xl border border-white/50 dark:border-white/5 shadow-md relative overflow-hidden">
               <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-pink-500/10 to-transparent pointer-events-none rounded-bl-full"></div>
               <template v-if="selectedLead.draftEmailPreview">
@@ -1139,7 +1229,7 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
           <template v-else-if="panelTab === 'timeline'">
             <div v-if="selectedLead.timeline" class="space-y-5 relative ml-3 mt-2">
               <div class="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-indigo-500/50 to-outline-variant/30"></div>
-              <div v-for="(event, i) in selectedLead.timeline" :key="i" class="relative pl-6">
+              <div v-for="(event, i) in selectedLead.timeline" :key="i" class="relative pl-6 pb-2">
                 <div class="absolute left-0 top-1 w-4 h-4 rounded-full"
                   :class="{
                     'bg-indigo-500 ring-4 ring-indigo-500/20': event.type === 'active',
@@ -1149,6 +1239,12 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
                 ></div>
                 <p class="text-[11px] font-black uppercase tracking-wider" :class="event.type === 'active' ? 'text-indigo-600 dark:text-indigo-400' : 'text-on-surface-variant'">{{ event.title }}</p>
                 <p class="text-[10px] text-outline font-medium mt-0.5">{{ event.desc }}</p>
+                
+                <div v-if="event.type === 'active' && event.stepIdx !== undefined && event.stepIdx < 5" class="mt-3">
+                  <button @click="advanceTimeline(selectedLead.id)" class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 hover:-translate-y-0.5 active:scale-95 border border-indigo-400/30 w-full sm:w-auto">
+                    {{ event.actionLabel }}
+                  </button>
+                </div>
               </div>
             </div>
             <div v-else class="flex flex-col items-center justify-center py-12 text-center">
@@ -1212,7 +1308,7 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
 
                 <h3 class="text-xl font-black tracking-tight text-on-surface mb-2">Delete this lead?</h3>
                 <p class="text-sm text-on-surface-variant font-medium leading-relaxed mb-7">
-                  This will permanently remove the lead from your CRM database.
+                  This will permanently remove the lead from your B2B Lead Engine database.
                   <strong class="text-on-surface">This action cannot be undone.</strong>
                 </p>
 
@@ -1249,7 +1345,7 @@ function sanitizeLinkedinUrl(url: string | undefined | null): string | null {
           
           <h3 class="text-2xl font-black text-center text-on-surface mb-2">Massive Data Wipe</h3>
           <p class="text-sm text-on-surface-variant text-center font-medium leading-relaxed mb-8">
-            This will permanently erase the <strong class="text-red-500">entire Lead Engine database</strong>. 
+            This will permanently erase the <strong class="text-red-500">entire B2B Lead Engine database</strong>. 
             Once confirmed, all extracted intelligence and email drafts will be gone forever.
           </p>
           

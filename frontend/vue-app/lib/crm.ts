@@ -17,7 +17,7 @@ export const leadSources = [
   "Companies House",
   "Field Sales",
   "Yelp",
-  "Lead Engine",
+  "B2B Lead Engine",
 ] as const;
 
 export const leadPriorities = [
@@ -34,6 +34,8 @@ export const dashboardSections = [
   "leads",
   "converted_leads",
   "generate_pods",
+  "live_tracking",
+  "payment_generation",
   "ai_leads",
   "analytics",
   "settings",
@@ -94,6 +96,7 @@ export type LeadRecord = {
   contactName?: string;
   contactTitle?: string;
   linkedinUrl?: string;
+  outreach_stage?: number;
   employees?: Employee[];
 };
 

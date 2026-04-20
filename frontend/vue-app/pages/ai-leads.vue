@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Lead Engine",
+  title: "B2B Lead Engine",
 });
 </script>
 

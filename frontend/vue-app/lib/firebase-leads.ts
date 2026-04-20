@@ -26,7 +26,7 @@ const sourceAliases: Array<{ match: string[]; value: LeadSource }> = [
   { match: ["companies house", "companies_house", "uk-ch"], value: "Companies House" },
   { match: ["yelp", "directory"], value: "Yelp" },
   { match: ["field", "sales", "offline"], value: "Field Sales" },
-  { match: ["lead engine", "scraper", "search", "linkedin", "local pack"], value: "Lead Engine" },
+  { match: ["lead engine", "scraper", "search", "linkedin", "local pack"], value: "B2B Lead Engine" },
 ];
 
 const priorityAliases: Array<{ match: string[]; value: LeadPriority }> = [
@@ -339,6 +339,7 @@ export function normalizeLeadRecord(id: string, rawValue: unknown): LeadRecord |
     podDimensions: pickString(rawValue, ["podDimensions"]),
     podGoodsDescription: pickString(rawValue, ["podGoodsDescription"]),
     podNotes: pickString(rawValue, ["podNotes"]),
+    outreach_stage: pickNumber(rawValue, ["outreach_stage", "outreachStage"], 0),
   };
 }
 

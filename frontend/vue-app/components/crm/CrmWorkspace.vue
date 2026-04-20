@@ -44,15 +44,15 @@ import {
   type SortOption,
 } from "~/lib/crm";
 import { playLeadNotifications, stopLeadNotification } from "~/lib/notification-sound";
-
-const props = defineProps<{
-  section: DashboardSectionKey;
-}>();
-
 import CrmPodDrawer from "./CrmPodDrawer.vue";
 import ScrapeLeadsModal from "./ScrapeLeadsModal.vue";
 import AiLeadsSection from "./AiLeadsSection.vue";
 import ImportLeadsModal from "./ImportLeadsModal.vue";
+import CrmLiveTrackingSection from "./CrmLiveTrackingSection.vue";
+
+const props = defineProps<{
+  section: DashboardSectionKey;
+}>();
 
 type PatchPayload = {
   leadId: string;
@@ -112,6 +112,7 @@ const realtimeDatabaseRulesPreview = computed(
 const sectionLinks = [
   { href: "/", label: "Dashboard", key: "dashboard" },
   { href: "/leads", label: "Leads", key: "leads" },
+  { href: "/payment-generation", label: "Payment generation", key: "payment_generation" },
   { href: "/analytics", label: "Analytics", key: "analytics" },
   { href: "/settings", label: "Settings", key: "settings" },
 ] as const;
@@ -129,6 +130,7 @@ const selectedPodLeadId = ref<string | null>(null);
 const notificationCount = ref(0);
 const isDarkMode = ref(false);
 const isLoading = ref(true);
+const isLoadingAiLeads = ref(true);
 const isSavingLead = ref(false);
 const error = ref<string | null>(null);
 const leads = ref<LeadRecord[]>([]);
@@ -196,10 +198,12 @@ function syncWorkspaceDataSource() {
     );
 
     // AI Leads Listener
+    isLoadingAiLeads.value = true;
     aiCleanupListener = onValue(
       databaseRef(rtdbInstance, realtimeAiLeadsPath.value),
       (snapshot) => {
         aiLeads.value = sortLeads(mapRealtimeLeads(snapshot.val()), "newest");
+        isLoadingAiLeads.value = false;
       }
     );
 
@@ -239,10 +243,12 @@ function syncWorkspaceDataSource() {
     );
 
     // AI Leads Firestore Listener
+    isLoadingAiLeads.value = true;
     aiCleanupListener = onSnapshot(
       query(collection(dbInstance, aiLeadsCollectionName.value), orderBy("createdAt", "desc")),
       (snapshot) => {
         aiLeads.value = snapshot.docs.map(mapFirestoreLead);
+        isLoadingAiLeads.value = false;
       }
     );
 
@@ -299,7 +305,7 @@ const filteredLeads = computed(() =>
       const matchesStatus =
         statusFilter.value === "All" ? true : lead.status === statusFilter.value;
       const matchesSource =
-        sourceFilter.value === "All" ? lead.source !== "Lead Engine" : lead.source === sourceFilter.value;
+        sourceFilter.value === "All" ? lead.source !== "B2B Lead Engine" : lead.source === sourceFilter.value;
 
       return matchesSearch && matchesStatus && matchesSource;
     }),
@@ -456,6 +462,24 @@ async function handleSaveLead(payload: PatchPayload) {
   }
 }
 
+async function handleUpdateAiLead(leadId: string, updates: Partial<LeadRecord>) {
+  try {
+    const rtdbInstance = rtdb.value;
+    if (rtdbInstance && hasRealtimeDatabaseConfig.value) {
+      await updateRealtime(databaseRef(rtdbInstance, `${realtimeAiLeadsPath.value}/${leadId}`), updates);
+      return;
+    }
+
+    const dbInstance = db.value;
+    if (dbInstance && isFirebaseConfigured.value) {
+      await updateDoc(doc(dbInstance, aiLeadsCollectionName.value, leadId), updates);
+    }
+  } catch (err) {
+    console.error("Failed to update AI lead", err);
+    error.value = "Unable to save AI lead updates to Firebase.";
+  }
+}
+
 async function handleDeleteLead(leadId: string, isAiLead: boolean = false) {
   try {
     const rtdbInstance = rtdb.value;
@@ -475,6 +499,8 @@ async function handleDeleteLead(leadId: string, isAiLead: boolean = false) {
   }
 }
 
+const wipeUserId = ref('local-dev-user-123');
+
 async function handleWipeAllLeads(collectionName: 'ai_leads' | 'leads', ids?: string[]) {
   try {
     const apiEndpoint = process.env.NODE_ENV === "development" 
@@ -485,7 +511,7 @@ async function handleWipeAllLeads(collectionName: 'ai_leads' | 'leads', ids?: st
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'x-user-id': 'local-dev-user-123' 
+        'x-user-id': wipeUserId.value 
       },
       body: JSON.stringify({ collectionName, ids: ids || [] })
     });
@@ -573,6 +599,8 @@ function toggleTheme() {
       <CrmTopBar
         :search-value="searchValue"
         :notification-count="notificationCount"
+        :open-lead-count="openLeadCount"
+        :today-count="todayCount"
         :is-dark-mode="isDarkMode"
         :display-name="slotProps?.session?.displayName || 'Admin'"
         :display-email="slotProps?.session?.displayEmail || 'admin@invoaura.com'"
@@ -581,9 +609,9 @@ function toggleTheme() {
         @theme-toggle="toggleTheme"
       />
 
-      <main class="pl-0 lg:pl-64 pt-16 flex-1 flex min-h-screen relative overflow-hidden">
-        <div class="flex-1 p-4 lg:p-8 bg-surface overflow-y-auto no-scrollbar w-full">
-          <div class="space-y-4">
+      <main class="pl-0 lg:pl-[280px] pt-16 flex-1 flex min-h-screen relative overflow-hidden transition-all">
+        <div class="flex-1 p-4 lg:p-10 overflow-y-auto no-scrollbar w-full" style="background: var(--page-bg);">
+          <div class="space-y-6 max-w-screen-2xl mx-auto">
             <nav class="surface-card flex items-center gap-2 overflow-x-auto p-2 lg:hidden">
               <NuxtLink
                 v-for="item in sectionLinks"
@@ -615,7 +643,7 @@ function toggleTheme() {
               </div>
             </div>
 
-            <CrmLoadingState v-if="isLoading" />
+            <CrmLoadingState v-if="isLoading || (section === 'ai_leads' && isLoadingAiLeads)" />
 
             <CrmDashboardSection
               v-else-if="section === 'dashboard'"
@@ -663,12 +691,23 @@ function toggleTheme() {
               />
             </div>
 
+            <div v-else-if="section === 'live_tracking'" class="w-full h-full pb-8">
+              <CrmLiveTrackingSection />
+            </div>
+
+            <div v-else-if="section === 'payment_generation'" class="w-full h-full pb-8">
+              <CrmPaymentGenerationSection />
+            </div>
+
             <AiLeadsSection 
               v-else-if="section === 'ai_leads'" 
               :leads="aiLeads" 
+              :user-id="slotProps?.session?.uid || 'local-dev-user-123'"
+              confirmation-text="This will permanently erase the entire B2B Lead Engine database. Once confirmed, all extracted intelligence and email drafts will be gone forever."
               @delete-lead="(id) => handleDeleteLead(id, true)" 
-              @wipe-all-leads="handleWipeAllLeads"
+              @wipe-all-leads="(col: any, ids: any) => { wipeUserId = slotProps?.session?.uid || 'local-dev-user-123'; handleWipeAllLeads(col, ids); }"
               @import="showImportModal = true"
+              @update-lead="handleUpdateAiLead"
             />
 
             <CrmAnalyticsSection
@@ -717,7 +756,7 @@ function toggleTheme() {
         @save="handleSaveLead"
       />
 
-      <ScrapeLeadsModal :existing-leads="aiLeads" />
+      <ScrapeLeadsModal :existing-leads="aiLeads" :user-id="slotProps?.session?.uid || 'local-dev-user-123'" />
       <ImportLeadsModal v-model="showImportModal" />
     </CrmAuthGate>
 </template>

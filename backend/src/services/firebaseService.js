@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { Timestamp } from "firebase-admin/firestore";
-import { getFirestoreDb } from "../config/firebase.js";
+import { getFirestoreDb, getRealtimeDb } from "../config/firebase.js";
 import { chunkArray } from "../utils/batch.js";
 import { createAppError } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
@@ -167,13 +167,46 @@ export async function wipeUserLeads({ userId, collectionName = LEADS_COLLECTION,
 }
 
 /**
- * Update a single lead for a user in a specific collection
+ * Update a single lead for a user in a specific collection (Firestore or RTDB)
  */
 export async function updateUserLead({ userId, leadId, collectionName = LEADS_COLLECTION, updates }) {
   if (!userId || !leadId) {
     throw createAppError(400, "A userId and leadId are required to update a lead.");
   }
 
+  // Handle Realtime Database updates (Lead Engine or Quote Requests)
+  const isRtdb = collectionName === "leadEngine" || collectionName === "quoteRequests";
+  
+  if (isRtdb) {
+    try {
+      const rtdb = getRealtimeDb();
+      const dbRef = rtdb.ref(`${collectionName}/${leadId}`);
+      
+      // Verification: Check if it exists and belongs to the user
+      const snapshot = await dbRef.once("value");
+      if (!snapshot.exists()) {
+        throw createAppError(404, `Lead with ID ${leadId} not found in Realtime Database.`);
+      }
+      
+      // Note: RTDB structure might vary, but typically we store userId on the lead
+      if (snapshot.val().userId && snapshot.val().userId !== userId) {
+         throw createAppError(403, "Access denied. Cannot update leads belonging to another user.");
+      }
+
+      await dbRef.update({
+        ...updates,
+        updatedAt: new Date().toISOString()
+      });
+
+      logger.info("RTDB Lead update successful", { userId, leadId, collectionName });
+      return { success: true };
+    } catch (error) {
+       logger.error("RTDB Lead update failed", { userId, leadId, collectionName, message: error.message });
+       throw error instanceof AppError ? error : createAppError(500, "Failed to update lead in Realtime Database.");
+    }
+  }
+
+  // Fallback to Firestore
   const db = getFirestoreDb();
   try {
     const docRef = db.collection(collectionName).doc(leadId);
@@ -193,7 +226,7 @@ export async function updateUserLead({ userId, leadId, collectionName = LEADS_CO
       updatedAt: Timestamp.now()
     });
 
-    logger.info("Lead update successful", { userId, leadId, collectionName });
+    logger.info("Firestore Lead update successful", { userId, leadId, collectionName });
     return { success: true };
   } catch (error) {
     logger.error("Lead update failed", { userId, leadId, collectionName, message: error.message });

@@ -10,7 +10,8 @@ import {
   Truck,
   UsersRound,
   Zap,
-  Plus
+  Plus,
+  CreditCard
 } from "lucide-vue-next";
 import { useRoute, useRouter } from "vue-router";
 import type { DashboardSection } from "~/lib/crm";
@@ -30,7 +31,9 @@ const items = [
   { href: "/leads", label: "Leads", section: "leads", icon: UsersRound },
   { href: "/converted-leads", label: "Converted Leads", section: "converted_leads", icon: CheckCircle },
   { href: "/generate-pods", label: "Generate PODs", section: "generate_pods", icon: FileText },
-  { href: "/ai-leads", label: "Lead Engine", section: "ai_leads", icon: Zap },
+  { href: "/live-tracking", label: "Live Tracking", section: "live_tracking", icon: Truck },
+  { href: "/payment-generation", label: "Payment Generation", section: "payment_generation", icon: CreditCard },
+  { href: "/ai-leads", label: "B2B Lead Engine", section: "ai_leads", icon: Zap },
   {
     href: "/analytics",
     label: "Analytics",
@@ -41,10 +44,10 @@ const items = [
 </script>
 
 <template>
-  <aside class="fixed hidden lg:flex left-0 top-0 h-screen w-64 pt-20 bg-slate-100 dark:bg-slate-950 flex-col z-40 border-r border-outline-variant/10">
+  <aside class="fixed hidden lg:flex left-0 top-0 h-screen w-[280px] pt-24 pb-8 flex-col z-40 bg-[length:200%_200%] transition-all" style="background: var(--sidebar-bg); border-right: 1px solid var(--border-color);">
     <div class="flex flex-col h-full py-4 gap-2">
       <div v-if="activeSection === 'ai_leads'" class="px-6 mb-6">
-          <button @click="router.push({ query: { ...route.query, scrape: 'true' } })" class="w-full py-3 px-4 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+          <button @click="router.push({ query: { ...route.query, scrape: 'true' } })" class="w-full py-3.5 px-4 bg-gradient-primary rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[var(--accent-soft)] hover-lift">
           <Plus class="w-5 h-5" />
           <span>Add Lead</span>
         </button>
@@ -56,10 +59,8 @@ const items = [
           :key="item.label"
           :to="item.href"
           :class="[
-            'flex items-center gap-3 px-4 py-3 transition-all duration-300 mx-2',
-            item.section === activeSection
-              ? 'bg-white dark:bg-slate-900 text-primary shadow-sm rounded-lg font-bold'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 font-medium rounded-lg'
+            'sidebar-link mx-4 my-1',
+            item.section === activeSection ? 'sidebar-link-active relative' : ''
           ]"
         >
           <component :is="item.icon" class="h-5 w-5" />
@@ -73,24 +74,6 @@ const items = [
         </NuxtLink>
       </nav>
 
-      <div class="mt-auto border-t border-outline-variant/10 pt-4 space-y-4 px-6 mb-4">
-        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-4">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-xs font-bold text-on-surface">Live Queue</p>
-            <BellDot class="h-4 w-4 text-outline" />
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/10">
-              <p class="text-[10px] font-bold text-outline uppercase">Open</p>
-              <p class="text-sm font-black mt-1">{{ openLeadCount }}</p>
-            </div>
-            <div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/10">
-              <p class="text-[10px] font-bold text-outline uppercase">Today</p>
-              <p class="text-sm font-black mt-1">{{ todayCount }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </aside>
 </template>

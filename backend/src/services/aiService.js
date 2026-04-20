@@ -367,9 +367,10 @@ export async function expandKeywords(keywords, region, requestedSelection = {}) 
   }
 }
 
-export async function generateLeadEnrichment(lead, fallbackEnrichment, requestedSelection = {}) {
+export async function generateLeadEnrichment(lead, fallbackEnrichment, requestedSelection = {}, customPrompt = null) {
   const outboundProfile = getOutboundProfile();
-  const prompt = [
+  
+  const promptLines = [
     "Enrich this business lead for outbound sales.",
     "Return only a JSON object with these keys:",
     "lead_score (integer 0-100), ai_summary (string), draft_email (string).",
@@ -377,6 +378,15 @@ export async function generateLeadEnrichment(lead, fallbackEnrichment, requested
     "Write the draft_email as a real business development email from the sender profile below.",
     "The goal is to win subcontract, overflow, same-day, or time-critical freight work that the recipient can pass to the sender for execution.",
     "Keep the tone concise, professional, and commercially realistic for UK logistics outreach.",
+    "CRITICAL RULE: NEVER use placeholder variables like [Your Name], [Your Phone], or [Your Email] in the draft_email. The email must be 100% ready to send without missing fields. Sign off intelligently.",
+  ];
+
+  if (customPrompt) {
+    promptLines.push(`USER CUSTOM INSTRUCTION: ${customPrompt}`);
+  }
+
+  const prompt = [
+    ...promptLines,
     `Sender Profile: ${JSON.stringify(outboundProfile)}`,
     `Lead: ${JSON.stringify({
       company: lead.company,

@@ -13,6 +13,7 @@ import type { LeadRecord } from "~/lib/crm";
 
 const props = defineProps<{
   existingLeads?: LeadRecord[];
+  userId: string;
 }>();
 
 const route = useRoute();
@@ -175,7 +176,7 @@ async function startScraping() {
       keywords: keywords.value,
       region: location.value || "Unknown",
       limit: boundedLimit,
-      userId: "local-dev-user-123",
+      userId: props.userId,
       sources: {
         google: sourceMaps.value,
         directories: sourceDirectories.value,
@@ -203,7 +204,7 @@ async function startScraping() {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
-            "x-user-id": "local-dev-user-123"
+            "x-user-id": props.userId
           },
           body: JSON.stringify(payload),
           signal: controller.signal,
@@ -414,7 +415,7 @@ function viewLeads() {
                 <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
                   <Search class="h-5 w-5" stroke-width="2.5" />
                 </div>
-                <h2 class="text-2xl font-black tracking-tight text-on-surface">Scrape Engine</h2>
+                <h2 class="text-2xl font-black tracking-tight text-on-surface">B2B Scrape Engine</h2>
               </div>
               <p class="text-[13px] text-outline mt-2 font-semibold">
                 Configure intent signals and extraction targets.

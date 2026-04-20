@@ -1,8 +1,10 @@
 import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore, initializeFirestore } from "firebase-admin/firestore";
+import { getDatabase } from "firebase-admin/database";
 
 let firebaseApp;
 let firestoreDb;
+let realtimeDb;
 
 function isPlaceholderFirebaseConfig(value = "") {
   return ["your-project-id", "firebase-adminsdk-xxxxx", "YOUR_PRIVATE_KEY"].some((marker) =>
@@ -50,11 +52,24 @@ export function getFirebaseApp() {
 
   const serviceAccount = buildServiceAccountFromEnv();
 
-  firebaseApp = serviceAccount
-    ? initializeApp({ credential: cert(serviceAccount) })
-    : initializeApp();
+  const config = {
+    credential: serviceAccount ? cert(serviceAccount) : undefined,
+    databaseURL: process.env.FIREBASE_DATABASE_URL
+  };
+
+  firebaseApp = initializeApp(config);
 
   return firebaseApp;
+}
+
+export function getRealtimeDb() {
+  if (realtimeDb) {
+    return realtimeDb;
+  }
+
+  const app = getFirebaseApp();
+  realtimeDb = getDatabase(app);
+  return realtimeDb;
 }
 
 export function getFirestoreDb() {
