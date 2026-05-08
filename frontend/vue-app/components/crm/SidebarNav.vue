@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Search,
   Settings,
+  ShieldCheck,
   Truck,
   UsersRound,
   Zap,
@@ -33,6 +34,7 @@ const items = [
   { href: "/generate-pods", label: "Generate PODs", section: "generate_pods", icon: FileText },
   { href: "/live-tracking", label: "Live Tracking", section: "live_tracking", icon: Truck },
   { href: "/payment-generation", label: "Payment Generation", section: "payment_generation", icon: CreditCard },
+  { href: "/driver-verification", label: "Driver Verification", section: "driver_verification", icon: ShieldCheck },
   { href: "/ai-leads", label: "B2B Lead Engine", section: "ai_leads", icon: Zap },
   {
     href: "/analytics",

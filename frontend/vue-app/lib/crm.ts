@@ -38,6 +38,7 @@ export const dashboardSections = [
   "payment_generation",
   "ai_leads",
   "analytics",
+  "driver_verification",
   "settings",
 ] as const;
 

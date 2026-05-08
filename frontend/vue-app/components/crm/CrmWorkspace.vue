@@ -49,6 +49,7 @@ import ScrapeLeadsModal from "./ScrapeLeadsModal.vue";
 import AiLeadsSection from "./AiLeadsSection.vue";
 import ImportLeadsModal from "./ImportLeadsModal.vue";
 import CrmLiveTrackingSection from "./CrmLiveTrackingSection.vue";
+import CrmDriverVerificationSection from "./CrmDriverVerificationSection.vue";
 
 const props = defineProps<{
   section: DashboardSectionKey;
@@ -112,7 +113,12 @@ const realtimeDatabaseRulesPreview = computed(
 const sectionLinks = [
   { href: "/", label: "Dashboard", key: "dashboard" },
   { href: "/leads", label: "Leads", key: "leads" },
-  { href: "/payment-generation", label: "Payment generation", key: "payment_generation" },
+  { href: "/converted-leads", label: "Converted Leads", key: "converted_leads" },
+  { href: "/generate-pods", label: "PODs", key: "generate_pods" },
+  { href: "/live-tracking", label: "Tracking", key: "live_tracking" },
+  { href: "/payment-generation", label: "Payments", key: "payment_generation" },
+  { href: "/driver-verification", label: "Verification", key: "driver_verification" },
+  { href: "/ai-leads", label: "AI Leads", key: "ai_leads" },
   { href: "/analytics", label: "Analytics", key: "analytics" },
   { href: "/settings", label: "Settings", key: "settings" },
 ] as const;
@@ -697,6 +703,10 @@ function toggleTheme() {
 
             <div v-else-if="section === 'payment_generation'" class="w-full h-full pb-8">
               <CrmPaymentGenerationSection />
+            </div>
+
+            <div v-else-if="section === 'driver_verification'" class="w-full h-full pb-8">
+              <CrmDriverVerificationSection />
             </div>
 
             <AiLeadsSection 
