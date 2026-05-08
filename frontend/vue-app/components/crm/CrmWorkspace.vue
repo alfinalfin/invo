@@ -587,7 +587,17 @@ function exportCsv() {
 function toggleTheme() {
   const nextMode = !isDarkMode.value;
   isDarkMode.value = nextMode;
+  
+  // Update dataset for CSS variables
   document.documentElement.dataset.theme = nextMode ? "dark" : "light";
+  
+  // Toggle .dark class for UI framework consistency
+  if (nextMode) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+  
   localStorage.setItem("invoaura-theme", nextMode ? "dark" : "light");
 }
 </script>
